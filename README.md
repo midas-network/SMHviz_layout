@@ -13,7 +13,7 @@ To install the package locally:
 - clone this repository
 - `pip install .`
 
-To install the pacakge from GitHub.com
+To install the package from GitHub.com
 
 `pip install git+https://github.com/midas-network/SMHViz_layout`
 
