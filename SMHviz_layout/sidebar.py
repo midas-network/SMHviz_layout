@@ -114,7 +114,7 @@ def location_selection(location_info, sel_value="US", disabled=False, clearable=
     :type css_p_disabled: str
     :return: a Div component with Dropdown component for Location selection
     """
-    if disabled is True:
+    if disabled is False:
         location_sel = html.Div([
             html.P("Location:"),
             dcc.Dropdown(
@@ -213,40 +213,51 @@ def ui_selection(options, value, disabled=False, add_description=None,
                 options=options, value=value)
         ])
         if add_description is not None:
-            ui_sel = html.Div([
-                ui_sel.children,
-                html.Br(),
-                add_description
-            ])
+            sel_comp = ui_sel.children + [html.Br(), add_description]
+            ui_sel = html.Div(sel_comp)
     return ui_sel
 
 
-def make_sidebar(round_tab, viz_setting, tab, scenario_file, location_info, constant_dict, ui_sel_list=None,
-                 ui_val=None,
+def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict, target_dict, def_target,
+                 ui_sel_list=None, ui_val=95, unselect_scenario=None, cumulative=True, multi_ui=True,
                  css_left_col="column left", css_check="checklist", css_radio="radioItems", css_p_disabled="p disabled",
                  css_check_disabled="checklist disabled", css_radio_disabled="radioItems disabled", css_drop="dropdown",
                  css_drop_disabled="dropdown disabled"):
     """Create the sidebar on the SMH visualization websites
 
-    The sidebar is depending on the round and on the plot tab selected
+    The sidebar is depending on the round and on the plot tab selected.
 
-    :parameter round_tab: Identifier of a specific round tab (for example "Round 13")
-    :type round_tab: str
-    :parameter viz_setting: A dictionary with round visualization associated information
-    :type viz_setting: dict
+    For the "Scenario plot" only: if the `multi_ui` parameter is set to True, a "multi" choice will be appended to the
+    uncertainty interval radioItems (`ui_sel_list`) with `{"label": "Multi", "value": -1}` and a small description will
+    be displayed: `"'multi' displays 95%, 90%, 80%, and 50% uncertainty intervals, shaded from lightest (95%) to darkest
+    (50%)"`, with a CSS: `className="span_sidebar"`
+
+    :parameter round_number: Numeric identifier of a specific round tab (for example "13")
+    :type round_number: str | int
     :parameter tab: Selected tab associated with the sidebar
     :type tab: str
     :parameter scenario_file: Path to CSV file containing scenario information per round
     :type scenario_file: str
     :parameter location_info: table containing location information in the SMH standard
     :type location_info: DataFrame
-    :parameter constant_dict: A dictionary with constant associated information
-    :type constant_dict: dict
+    :parameter scenario_dict: A dictionary with scenario id (value) and associated number (key)
+    :type scenario_dict: dict
+    :parameter target_dict: A dictionary with target name (as in submission file) as keys and
+        target full name as value
+    :type target_dict: dict
+    :parameter def_target: Character indicating default target selection (for example: "hosp")
     :parameter ui_sel_list: A dictionary with the "label" and "value" information (example: "{"label": "None", "value":
         0}"). If `None`: [{"label": "None", "value": 0}, {"label": "50%", "value": 50}, {"label": "95%", "value": 95}]
     :type ui_sel_list: dict
-    :parameter ui_val: Value indicating default uncertainty interval selection (for example: 0)
-    :type ui_val: str | int | bool
+    :parameter ui_val: Value indicating default uncertainty interval selection (default: 95).
+    :type ui_val: int
+    :parameter unselect_scenario: A list of scenario id to uncheck by default. If None, all selected
+    :type unselect_scenario: list
+    :parameter cumulative: [For risk map only] Boolean, to use cumulative (True) or incident target(s) (False)
+    :type cumulative: bool
+    :parameter multi_ui: [For scenario plot only] Boolean, to include a "multi" options in the uncertainty interval
+        choices
+    :type multi_ui: bool
     :parameter css_left_col: string, name of the associated CSS element, see documentation
     :type css_left_col: str
     :parameter css_check: string, name of the associated CSS element, see documentation
@@ -270,7 +281,6 @@ def make_sidebar(round_tab, viz_setting, tab, scenario_file, location_info, cons
         ui_sel_list = [{"label": "None", "value": 0},
                        {"label": "50%", "value": 50},
                        {"label": "95%", "value": 95}]
-    round_number = viz_setting[round_tab]["round_number"]
     # Tab-specific output
     # Scenario
     scen_info = pd.read_csv(scenario_file)
@@ -280,11 +290,7 @@ def make_sidebar(round_tab, viz_setting, tab, scenario_file, location_info, cons
     for i in scen_info:
         scen_check.append(i + " (" + scen_info[i] + ")")
     scen_check = dict(zip(scen_info.keys(), scen_check))
-    invert_scen = {v: k for k, v in constant_dict["scenario_id"].items()}
-    if "unselect_scenario" in viz_setting[round_tab].keys():
-        unselect_scenario = viz_setting[round_tab]["unselect_scenario"]
-    else:
-        unselect_scenario = None
+    invert_scen = {v: k for k, v in scenario_dict.items()}
     if tab in ["scenario", "model_distribution", "spaghetti", "multipat_plot", "proj_peaks"]:
         scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario, div_type="checklist",
                                           css_check=css_check, css_check_disabled=css_check_disabled,
@@ -310,17 +316,11 @@ def make_sidebar(round_tab, viz_setting, tab, scenario_file, location_info, cons
         location_sel = location_selection(list_location, disabled=True, css_drop=css_drop,
                                           css_drop_disabled=css_drop_disabled, css_p_disabled=css_p_disabled)
     # Target
-    target_dict = viz_setting[round_tab]["target"]
-    def_target = viz_setting[round_tab]["def_target"]
     def_targ = str()
     for targ in target_dict.keys():
         if len(re.findall(def_target, targ)) > 0:
             def_targ = targ
             break
-    cumulative = True
-    if 'risk_map' in viz_setting[round_tab].keys():
-        if viz_setting[round_tab]["risk_map"]["cumulative"] == "False":
-            cumulative = False
     if tab in ["scenario", "spaghetti"]:
         target_sel = target_selection(target_dict, def_targ)
     elif tab in ["state_deviation", "trend_map", "multipat_plot", "proj_peaks", "heatmap", "sample_peak", "risk_map"]:
@@ -344,21 +344,13 @@ def make_sidebar(round_tab, viz_setting, tab, scenario_file, location_info, cons
                                       css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     # UI
     if tab in ["scenario", "model_specific"]:
-        if viz_setting[round_tab]["multi"] == "True" and tab in ["scenario"]:
+        if (multi_ui is True) and (tab in ["scenario"]):
             ui_sel_list.append({"label": "Multi", "value": -1})
             ui_text = html.Span("'multi' displays 95%, 90%, 80%, and 50% uncertainty intervals, shaded from lightest "
                                 "(95%) to darkest (50%)", className="span_sidebar")
-            if ui_val is None:
-                ui_value = -1
-            else:
-                ui_value = ui_val
         else:
             ui_text = None
-            if ui_val is None:
-                ui_value = 95
-            else:
-                ui_value = ui_val
-        ui_sel = ui_selection(ui_sel_list, ui_value, add_description=ui_text, css_p_disabled=css_p_disabled,
+        ui_sel = ui_selection(ui_sel_list, ui_val, add_description=ui_text, css_p_disabled=css_p_disabled,
                               css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     else:
         ui_sel = ui_selection(ui_sel_list, ui_val, disabled=True, css_p_disabled=css_p_disabled,
