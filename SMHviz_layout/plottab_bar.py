@@ -22,11 +22,12 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None):
         style = {"margin-left": "5%", "width": "95%"}
     notes = html.Div([
         html.P(["These projections were produced by combining separate multi-model ensemble projections of " +
-                pathogen + " and " + other_pathogen + ". We do not account for any interaction between " + pathogen +
-                " and " + other_pathogen + ", which could include behavioral or immunological interactions that " +
-                "might modify the impacts of one or both of these viruses. For more information on " + other_pathogen +
-                " projections and  scenarios, please consult the ",
-                html.A(other_pathogen + " Scenario Modeling Hub Website", target="blank",
+                pathogen.title() + " and " + other_pathogen.title() +
+                ". We do not account for any interaction between " + pathogen.title() + " and " +
+                other_pathogen.title() + ", which could include behavioral or immunological interactions that " +
+                "might modify the impacts of one or both of these viruses. For more information on " +
+                other_pathogen.title() + " projections and  scenarios, please consult the ",
+                html.A(other_pathogen.title() + " Scenario Modeling Hub Website", target="blank",
                        href=website)
                 ]),
                 ], style=style)
@@ -87,13 +88,13 @@ def multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other
         other_scen_sel.append(other_scenario["name"][i] + " (" + other_scenario["id"][i] + ")")
     other_scen_dict = dict(zip(other_scenario["id"], other_scen_sel))
     bar = html.Div([
-        make_dropdown(pathogen + "Quantile", pathogen + "-quantile_dropdown", quant_opt, sel_quant, clearable=clearable,
-                      css_class=css_class),
+        make_dropdown(pathogen.title() + " Quantile", pathogen + "-quantile_dropdown", quant_opt, sel_quant,
+                      clearable=clearable, css_class=css_class),
         make_radio_items(other_pathogen.title() + " Round " + str(other_round) + " Scenario Selection",
                          "other-scenario", options=other_scen_dict, value=def_scen,
                          css_class=css_multi_radio),
-        make_dropdown(other_pathogen + "Quantile", "other", quant_opt, sel_quant, clearable=clearable,
-                      css_class=css_class)
+        make_dropdown(other_pathogen.title() + " Quantile", "other-quantile_dropdown", quant_opt, sel_quant,
+                      clearable=clearable, css_class=css_class)
     ], style=bar_style)
     plot_bar = [bar, multi_pathogen_notes(pathogen, other_pathogen, website, style=note_style)]
     return html.Div(plot_bar)
@@ -138,12 +139,12 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
                               css_class=css_class, tooltip=tooltip)
     panel_choice = html.Div([
         html.Br(), dcc.RadioItems(id="multi-ref", options=panel_name, value=panel_name[0])], style=radio_comp_style)
-    if sidebar_option is True:
+    if sidebar_option is False:
         week_slider = html.Div(week_slider, hidden=True)
     if multi_panel is False:
         panel_choice = html.Div(panel_choice, hidden=True)
     plot_bar = [week_slider, panel_choice]
-    return html.Div(plot_bar)
+    return html.Div(plot_bar, style={"width":"100%"})
 
 
 def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=True, css_med="plot_bar_sel",
@@ -247,12 +248,12 @@ def heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=None, sel_quant=0.5,
 
     checkbox = make_checkbox("", "ensemble_checkbox", [{"label": "Show Additional Ensemble", "value": "True"}],
                              hide_ens, style={"display": "inline-block", "margin-left": "5%", "width": "15%"})
-    quant_drop = make_dropdown("Quantile", "heatmap", quant_opt, sel_quant, clearable=clearable,
+    quant_drop = make_dropdown("Quantile", "heatmap-quantile_dropdown", quant_opt, sel_quant, clearable=clearable,
                                css_class=css_class)
     scenario_sel2 = make_dropdown("Comparison Scenario", "scenario2-dropdown", options=scen_choice,
                                   value=scen_choice[1], clearable=True)
     order_radio = make_radio_items("Location Order", id_name="order_heatmap",  value="Geographical",
-                                   options=["Alphabetical", "Geographical"], inline=False, css_class=css_h_radio)
+                                   options=["Alphabetical", "Geographical"], inline=True, css_class=css_h_radio)
     method_dropdown = make_dropdown("Standardization Approach", "method_dropdown", options=method_list,
                                     value=method_list[0], css_class=css_h_drop, clearable=clearable)
     plot_bar = html.Div([
@@ -403,13 +404,13 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     # Prepare Specific Plot tab Selection component
     if method_list is None:
         method_list = ["population size", "all projection"]
-    checkbox = make_checkbox("", "ensemble_checkbox", [{"label": "Show Additional Ensemble", "value": "True"}],
+    checkbox = make_checkbox("", "ensemble-checkbox", [{"label": "Show Additional Ensemble", "value": "True"}],
                              hide_ens, style=style_checkbox)
     radio_target = make_radio_items(
         title="Outcome type", id_name="target_type-radio", value="inc",
         options=[{"label": "Incident", "value": "inc"}, {"label": "Cumulative", "value": "cum"}],
         css_class=css_sel, inline=inline_radio)
-    model_sel = make_dropdown(title="Model", id_name='model_dropdown', options=val_default, value=val_default,
+    model_sel = make_dropdown(title="Model", id_name='model_dropdown', options=[val_default], value=val_default,
                               css_class=css_sel, clearable=clearable)
     radio_yaxis = make_radio_items(
         title="Y-axis Scale", id_name="yaxis-scale-radio",
