@@ -43,7 +43,7 @@ def make_abstract_tab(round_number, path="./visualization/data-visualization/mod
     file_list = os.listdir(path + "round" + str(round_number))
     checkbox_list = list()
     for i in file_list:
-        checkbox_entry = re.sub("\d{4}-\d{2}-\d{2}-|-Abstract.md", "", i)
+        checkbox_entry = re.sub("\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md", "", i)
         checkbox_list.append(checkbox_entry)
     checkbox_list.sort()
     output = html.Div([
@@ -62,7 +62,7 @@ def render_abstract(round_number, round_date, team_model_name,
 
     Return the content of a specific abstract.
     The function assumed that the abstract filepath and filename followed the SMH standard:
-    `"PATH/TO/roundX/YYY-MM-DD-team_model-Abstract.md"` with:
+    `"PATH/TO/roundX/YYY-MM-DD-team_model-(A|a)bstract.md"` with:
         - "PATH/TO/": path to a folder storing the abstract by round
         - "roundX": round information with X a number associated with a specific round
         - "YYYY-MM-DD": date information associated with the specific round X
@@ -74,13 +74,15 @@ def render_abstract(round_number, round_date, team_model_name,
     :parameter round_date: Date identifier of a specific round tab in a YYYY-MM-DD format (for example "2022-03-13")
     :type round_date: str
     :parameter team_model_name: Name of a team_model (same as in the filename) specifying which abstract
-    content to read
+      content to read
     :type team_model_name: str
     :parameter path: Relative path to the folder containing the abstracts information for all round
     :type path: str
     :return: Div component associated with a specific abstract
     """
     filename = path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + "-Abstract.md"
+    if os.path.isfile(filename) is False:
+        filename = path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + "-abstract.md"
     with open(filename, "r") as f:
         markdown_text = f.read()
     return html.Div([
