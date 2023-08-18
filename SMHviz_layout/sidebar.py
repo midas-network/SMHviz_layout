@@ -219,7 +219,7 @@ def ui_selection(options, value, disabled=False, add_description=None,
 
 
 def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict, target_dict, def_target,
-                 ui_sel_list=None, ui_val=95, unselect_scenario=None, cumulative=True, multi_ui=True,
+                 ui_sel_list=None, ui_val=95, unselect_scenario=None, cumulative=True, multi_ui=True, round_name=None,
                  css_left_col="column left", css_check="checklist", css_radio="radioItems", css_p_disabled="p disabled",
                  css_check_disabled="checklist disabled", css_radio_disabled="radioItems disabled", css_drop="dropdown",
                  css_drop_disabled="dropdown disabled"):
@@ -258,6 +258,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     :parameter multi_ui: [For scenario plot only] Boolean, to include a "multi" options in the uncertainty interval
         choices
     :type multi_ui: bool
+    :parameter round_name: Name of the round to display, if None "Round <Number>"
+    :type round_name: str
     :parameter css_left_col: string, name of the associated CSS element, see documentation
     :type css_left_col: str
     :parameter css_check: string, name of the associated CSS element, see documentation
@@ -355,11 +357,14 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     else:
         ui_sel = ui_selection(ui_sel_list, ui_val, disabled=True, css_p_disabled=css_p_disabled,
                               css_radio_disabled=css_radio_disabled, css_radio=css_radio)
+    # Round name
+    if round_name is None:
+        round_name = "Round " + str(round_number)
     # Sidebar
     sidebar = html.Div([
         html.H2("Model Projection", className="title"),
         html.Div("New scenario for models are defined in each round"),
-        html.H3("Round " + str(round_number), className="title"),
+        html.H3(round_name, className="title"),
         scenario_sel,
         html.Hr(className="hr-notes"),
         location_sel,
