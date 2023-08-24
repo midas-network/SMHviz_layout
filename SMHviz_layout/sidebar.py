@@ -200,14 +200,14 @@ def ui_selection(options, value, disabled=False, add_description=None,
         for i in options:
             i.update({"disabled": True})
         ui_sel = html.Div([
-            html.P("Uncertainty Interval", className=css_p_disabled),
+            html.P("Uncertainty Interval: ", className=css_p_disabled),
             dcc.RadioItems(
                 id="ui-radio", labelClassName=css_radio_disabled,
                 options=options)
         ])
     else:
         ui_sel = html.Div([
-            html.P("Uncertainty Interval"),
+            html.P("Uncertainty Interval: "),
             dcc.RadioItems(
                 id="ui-radio", labelClassName=css_radio,
                 options=options, value=value)
