@@ -239,7 +239,7 @@ The principal functions are:
 | Projection Peaks (`proj_peaks`)           | Checklist  | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
 | Spatiotemporal Waves (`heatmap`)          | RadioItems | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
 | Peak Timing (`sample_peak`)               | RadioItems | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
-| Peak Timing Hospitalization (`peak_time_model`) | RadioItems | *Disabled* |                      *Disabled*                     |                         *Disabled*                         |
+| Peak Timing Hospitalization (`peak_time_model`) | Checklist  | *Disabled* |                      *Disabled*                     |                         *Disabled*                         |
 
 ## CSS
 
