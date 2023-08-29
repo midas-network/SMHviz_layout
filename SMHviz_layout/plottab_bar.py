@@ -135,8 +135,8 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
     """
     if radio_comp_style is None:
         radio_comp_style = {"display": "inline-block", "margin-left": "5%", "width": "45%"}
-    week_slider = make_slider("Cumulative Starting From Projection Week:", "week-slider", 1, max_horizon, 4,
-                              css_class=css_class, tooltip=tooltip)
+    week_slider = make_slider("Cumulative Starting From Projection Week:", "week-slider", 1,
+                              max_horizon, 4, css_class=css_class, tooltip=tooltip)
     panel_choice = html.Div([
         html.Br(), dcc.RadioItems(id="multi-ref", options=panel_name, value=panel_name[0])], style=radio_comp_style)
     if sidebar_option is False:
@@ -144,7 +144,7 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
     if multi_panel is False:
         panel_choice = html.Div(panel_choice, hidden=True)
     plot_bar = [week_slider, panel_choice]
-    return html.Div(plot_bar, style={"width":"100%"})
+    return html.Div(plot_bar, style={"width": "100%"})
 
 
 def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=True, css_med="plot_bar_sel",
@@ -246,9 +246,11 @@ def heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=None, sel_quant=0.5,
     if method_list is None:
         method_list = ["state sum", "population size", "all projection", "all sum"]
 
-    checkbox = make_checkbox("", "ensemble_checkbox", [{"label": "Show Additional Ensemble", "value": "True"}],
+    checkbox = make_checkbox("", "ensemble-checkbox",
+                             [{"label": "Show Additional Ensemble", "value": "True"}],
                              hide_ens, style={"display": "inline-block", "margin-left": "5%", "width": "15%"})
-    quant_drop = make_dropdown("Quantile", "heatmap-quantile_dropdown", quant_opt, sel_quant, clearable=clearable,
+    quant_drop = make_dropdown("Quantile", "heatmap-quantile_dropdown", quant_opt, sel_quant,
+                               clearable=clearable,
                                css_class=css_class)
     scenario_sel2 = make_dropdown("Comparison Scenario", "scenario2-dropdown", options=scen_choice,
                                   value=scen_choice[1], clearable=True)
@@ -259,7 +261,8 @@ def heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=None, sel_quant=0.5,
     plot_bar = html.Div([
         html.Div([model_sel, checkbox, order_radio, method_dropdown], className=css_h_plot),
         html.Br(),
-        html.Div("Following options are not available for the model 'Ground Truth':", style={"margin-left": "5%"}),
+        html.Div("Following options are not available for the model 'Ground Truth':",
+                 style={"margin-left": "5%"}),
         html.Div([scenario_sel2, quant_drop], className=css_h_plot)
     ], style=style)
     return plot_bar
@@ -269,7 +272,7 @@ def sample_peak_bar(tf_options=None, clearable=False, css_class="plot_bar_sel", 
     """Create Peak specific top bar filter
 
     Create Peak top bar filter containing:
-        - a Dropdown with team-model information (without Ensemble(s)), with a "Ensemble" (peak specific ensemble)
+        - a Dropdown with team-model information (without Ensemble(s)), with an "Ensemble" (peak specific ensemble)
         - a Dropdown with time frame options (or a Slider)
         - a hidden checkbox for additional ensemble set to False (for internal purposes)
 
@@ -291,8 +294,8 @@ def sample_peak_bar(tf_options=None, clearable=False, css_class="plot_bar_sel", 
                                  css_class=css_class, clearable=clearable)
     tf_drop = make_dropdown(title="Time Frame", id_name='tf_dropdown', options=tf_options, value=tf_options[0],
                             css_class=css_class, clearable=clearable)
-    checkbox = make_checkbox("", "ensemble_checkbox", [{"label": "Show Additional Ensemble", "value": "True"}],
-                             hide=True, style={})
+    checkbox = make_checkbox("", "ensemble-checkbox",
+                             [{"label": "Show Additional Ensemble", "value": "False"}], hide=True, style={})
     plot_bar = html.Div([
         html.Div([model_tf_sel, tf_drop], className=css_bar_plot),
         html.Div(checkbox)
@@ -404,8 +407,8 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     # Prepare Specific Plot tab Selection component
     if method_list is None:
         method_list = ["population size", "all projection"]
-    checkbox = make_checkbox("", "ensemble-checkbox", [{"label": "Show Additional Ensemble", "value": "True"}],
-                             hide_ens, style=style_checkbox)
+    checkbox = make_checkbox("", "ensemble-checkbox", [{"label": "Show Additional Ensemble",
+                                                        "value": "True"}], hide_ens, style=style_checkbox)
     radio_target = make_radio_items(
         title="Outcome type", id_name="target_type-radio", value="inc",
         options=[{"label": "Incident", "value": "inc"}, {"label": "Cumulative", "value": "cum"}],
@@ -416,10 +419,10 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
         title="Y-axis Scale", id_name="yaxis-scale-radio",
         options=[{"label": "Linear", "value": "linear"}, {"label": "Log", "value": "log"}], value='linear',
         css_class=css_sel, inline=inline_radio)
-    week_slider = make_slider("Wks to Show Beyond Observed Data", "week-slider", 6, max_horizon, 4,
-                              css_class=css_sel, tooltip=tooltip)
-    radio_week = make_radio_items("Week", "week-radio", [max_horizon/2, max_horizon], max_horizon/2,
-                                  css_class=css_sel, inline=inline_radio)
+    week_slider = make_slider("Wks to Show Beyond Observed Data", "week-slider", 6, max_horizon,
+                              4, css_class=css_sel, tooltip=tooltip)
+    radio_week = make_radio_items("Week", "week-radio", [max_horizon/2, max_horizon],
+                                  max_horizon/2, css_class=css_sel, inline=inline_radio)
     # Prepare plot bar
     if plot_tab in ["scenario"]:
         plot_bar = [checkbox]
@@ -453,6 +456,10 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     elif plot_tab in ["sample_peak"]:
         plot_bar = sample_peak_bar(tf_options=tf_options, clearable=clearable, css_class=css_sel,
                                    css_bar_plot=css_bar_plot)
+    elif plot_tab in ["peak_time_model"]:
+        checkbox_hide = make_checkbox("", "ensemble-checkbox",  hide=True, style={},
+                                      options=[{"label": "", "value": "False"}])
+        plot_bar = [model_sel, checkbox_hide]
     else:
         plot_bar = []
     # return

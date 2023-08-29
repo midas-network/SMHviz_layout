@@ -293,7 +293,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         scen_check.append(i + " (" + scen_info[i] + ")")
     scen_check = dict(zip(scen_info.keys(), scen_check))
     invert_scen = {v: k for k, v in scenario_dict.items()}
-    if tab in ["scenario", "model_distribution", "spaghetti", "multipat_plot", "proj_peaks"]:
+    if tab in ["scenario", "model_distribution", "spaghetti", "multipat_plot", "proj_peaks", "peak_time_model"]:
         scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario, div_type="checklist",
                                           css_check=css_check, css_check_disabled=css_check_disabled,
                                           css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
