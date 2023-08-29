@@ -195,7 +195,9 @@ The principal functions are:
 | Projection Peaks (`proj_peaks`)           | *None*                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Spatiotemporal Waves (`heatmap`)          | Two Lines:<br/>- First line: <br/>Dropdown of team_model and Ensemble(s) <br/>Checkbox to add additional ensemble(s) <br/>RadioItems on the yaxis order: Alphabetical or Geographical (default) <br/>Dropdown with the possible approach (population size by default) <br/>- Second Line: <br/>Dropdown (clearable) with the scenario associated with the round (second one, by default) <br/>Dropdown with the quantile to plot |
 | Peak Timing (`sample_peak`)               | Dropdown of team_model and Ensemble ("Ensemble": peak specific ensemble) <br/>Dropdown with time frame options (or a Slider) <br/>Hidden checkbox for additional ensemble set to `False` (for internal purposes)                                                                                                                                                                                                                 |
-
+| Peak Timing Hospitalization (`peak_time_model`)| Dropdown of team_model and Ensemble ("Ensemble": peak specific ensemble)                           |
+                                                                                                          
+                                                                                                          
 ### Sidebar
 
 This module contains the functions to generate the sidebar on the left side of 
@@ -237,6 +239,7 @@ The principal functions are:
 | Projection Peaks (`proj_peaks`)           | Checklist  | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
 | Spatiotemporal Waves (`heatmap`)          | RadioItems | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
 | Peak Timing (`sample_peak`)               | RadioItems | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
+| Peak Timing Hospitalization (`peak_time_model`) | RadioItems | *Disabled* |                      *Disabled*                     |                         *Disabled*                         |
 
 ## CSS
 
