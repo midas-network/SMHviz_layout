@@ -181,7 +181,7 @@ The principal functions are:
 #### Plot tab and associated elements:
 
 
-| Plot tab name (internal id)                     | Top Bar                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Example Plot tab name (internal id)             | Top Bar                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |:------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Scenario Plot (`scenario`)                      | Checkbox to add additional ensemble(s)                                                                                                                                                                                                                                                                                                                                                                                           |
 | Model Specific Plot (`model_specific`)          | RadioItems to select incident/cumulative target <br/>Dropdown of team_model and Ensemble(s) <br/>Checkbox to add additional ensemble(s)                                                                                                                                                                                                                                                                                          |
@@ -196,7 +196,8 @@ The principal functions are:
 | Spatiotemporal Waves (`heatmap`)                | Two Lines:<br/>- First line: <br/>Dropdown of team_model and Ensemble(s) <br/>Checkbox to add additional ensemble(s) <br/>RadioItems on the yaxis order: Alphabetical or Geographical (default) <br/>Dropdown with the possible approach (population size by default) <br/>- Second Line: <br/>Dropdown (clearable) with the scenario associated with the round (second one, by default) <br/>Dropdown with the quantile to plot |
 | Peak Timing (`sample_peak`)                     | Dropdown of team_model and Ensemble ("Ensemble": peak specific ensemble) <br/>Dropdown with time frame options (or a Slider) <br/>Hidden checkbox for additional ensemble set to `False` (for internal purposes)                                                                                                                                                                                                                 |
 | Peak Timing Hospitalization (`peak_time_model`) | Dropdown of team_model and Default Ensemble <br/>Hidden checkbox for additional ensemble set to `False` (for internal purposes) <br/>RadioItems on the yaxis order: Alphabetical or Geographical (default)                                                                                                                                                                                                                       |
-                                                                                                          
+| Peak size Hospitalization (`peak_size`)         | *None*                                                                                                                                                                                                                                                                                                                                                                                                                           |
+
                                                                                                           
 ### Sidebar
 
@@ -225,7 +226,7 @@ The principal functions are:
 
 #### Plot tab and associated sidebar
 
-| Plot tab name (internal id)                     |  Scenario  |  Location  |                       Target                        |                     Uncertain Internal                     |
+| Example Plot tab name (internal id)             |  Scenario  |  Location  |                       Target                        |                     Uncertain Internal                     |
 |:------------------------------------------------|:----------:|:----------:|:---------------------------------------------------:|:----------------------------------------------------------:|
 | Scenario Plot (`scenario`)                      | Checklist  |  Dropdown  |               RadioItems (all target)               | RadioItems: None, 50%, 95%, multi (depending on the round) |
 | Model Specific Plot (`model_specific`)          | *Disabled* |  Dropdown  |                     *Disabled*                      |                         RadioItems                         |
@@ -240,6 +241,7 @@ The principal functions are:
 | Spatiotemporal Waves (`heatmap`)                | RadioItems | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
 | Peak Timing (`sample_peak`)                     | RadioItems | *Disabled* |              RadioItems ("inc" target)              |                         *Disabled*                         |
 | Peak Timing Hospitalization (`peak_time_model`) | Checklist  | *Disabled* |                     *Disabled*                      |                         *Disabled*                         |
+| Peak size Hospitalization (`peak_size`)         | Checklist  |  Dropdown  |                     *Disabled*                      |                         *Disabled*                         |
 
 ## CSS
 

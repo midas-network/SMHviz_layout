@@ -293,7 +293,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         scen_check.append(i + " (" + scen_info[i] + ")")
     scen_check = dict(zip(scen_info.keys(), scen_check))
     invert_scen = {v: k for k, v in scenario_dict.items()}
-    if tab in ["scenario", "model_distribution", "spaghetti", "multipat_plot", "proj_peaks", "peak_time_model"]:
+    if tab in ["scenario", "model_distribution", "spaghetti", "multipat_plot", "proj_peaks", "peak_time_model",
+               "peak_size"]:
         scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario, div_type="checklist",
                                           css_check=css_check, css_check_disabled=css_check_disabled,
                                           css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
@@ -311,7 +312,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     # Location
     list_location = list(location_info["location_name"])
     list_location.remove('U.S. Minor Outlying Islands')
-    if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution", "multipat_plot"]:
+    if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution", "multipat_plot",
+               "peak_size"]:
         location_sel = location_selection(list_location, css_drop=css_drop, css_drop_disabled=css_drop_disabled,
                                           css_p_disabled=css_p_disabled)
     else:
