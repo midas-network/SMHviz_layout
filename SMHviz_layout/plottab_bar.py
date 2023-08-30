@@ -459,7 +459,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     elif plot_tab in ["peak_time_model"]:
         checkbox_hide = make_checkbox("", "ensemble-checkbox",  hide=True, style={},
                                       options=[{"label": "", "value": "False"}])
-        plot_bar = [model_sel, checkbox_hide]
+        order_radio = make_radio_items("Location Order", id_name="order_heatmap", value="Geographical",
+                                       options=["Alphabetical", "Geographical"], inline=True, css_class=css_h_radio)
+        plot_bar = [model_sel, checkbox_hide, order_radio]
     else:
         plot_bar = []
     # return
