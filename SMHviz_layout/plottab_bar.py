@@ -85,7 +85,7 @@ def multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other
         quant_opt = [0.05, 0.25, 0.5, 0.75, 0.95]
     other_scen_sel = list()
     for i in range(len(other_scenario["name"])):
-        other_scen_sel.append(other_scenario["name"][i] + " (" + other_scenario["id"][i] + ")")
+        other_scen_sel.append(other_scenario["name"][i])
     other_scen_dict = dict(zip(other_scenario["id"], other_scen_sel))
     bar = html.Div([
         make_dropdown(pathogen.title() + " Quantile", pathogen + "-quantile_dropdown", quant_opt, sel_quant,
