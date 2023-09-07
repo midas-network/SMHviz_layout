@@ -28,7 +28,7 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None):
                 "might modify the impacts of one or both of these viruses. For more information on " +
                 other_pathogen.title() + " projections and  scenarios, please consult the ",
                 html.A(other_pathogen.title() + " Scenario Modeling Hub Website", target="blank",
-                       href=website)
+                       href=website), html.Span(".")
                 ]),
                 ], style=style)
     return notes
