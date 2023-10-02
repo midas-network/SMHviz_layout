@@ -30,7 +30,7 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None):
                 html.A(other_pathogen.title() + " Scenario Modeling Hub Website", target="blank",
                        href=website), html.Span(".")
                 ]),
-                ], style=style)
+    ], style=style)
     return notes
 
 
@@ -95,6 +95,52 @@ def multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other
                          css_class=css_multi_radio),
         make_dropdown(other_pathogen.title() + " Quantile", "other-quantile_dropdown", quant_opt, sel_quant,
                       clearable=clearable, css_class=css_class)
+    ], style=bar_style)
+    plot_bar = [bar, multi_pathogen_notes(pathogen, other_pathogen, website, style=note_style)]
+    return html.Div(plot_bar)
+
+
+def multi_pathogen_bar_comp(pathogen, other_scenario, def_scen, other_pathogen, other_round, website, bar_style=None,
+                            note_style=None):
+    """Create Combine Multi-pathogen specific top bar filter
+
+    Create Combine Multi-pathogen specific top bar filter containing:
+
+    - a checkbox options of the additional pathogen selected round scenario (id: `other-scenario`)
+    - a notes with link to additional information
+
+    :parameter pathogen: Name of the principal pathogen
+    :type pathogen: str
+    :parameter other_scenario: A dictionary with the id and associated name for the additional pathogen selected
+        round scenario, for example: {'id': ['A', 'B'], 'name':['Scenario A'. 'Scenario B']}. The keys: `id` and
+        `name` need to be included in the dictionary.
+    :type other_scenario: dict
+    :parameter def_scen: `id` information of the selected additional pathogen scenario
+    :type def_scen: str
+    :parameter other_pathogen: Name of the additional pathogen
+    :type other_pathogen: str
+    :parameter other_round: Number of the additional pathogen round associated in this tab (for example: 13)
+    :type other_round: int
+    :parameter website: Website link to the additional pathogen SMH hub website
+    :type website: str
+    :parameter bar_style: Style associated with the checkbox,
+        if `None`: {'width': '100%', 'display': 'flex'}
+    :type bar_style: dict | str
+    :parameter note_style: Style associated with the checkbox,
+        if `None`: {"display": "inline-block", "margin-left": "5%", "width": "25%"}
+    :type note_style: dict | str
+    :return: a Div component with the Multi-pathogen specific top bar
+    """
+    if bar_style is None:
+        bar_style = {'width': '100%', 'display': 'flex'}
+    other_scen_sel = list()
+    for i in range(len(other_scenario["name"])):
+        other_scen_sel.append(other_scenario["name"][i])
+    other_scen_dict = dict(zip(other_scenario["id"], other_scen_sel))
+    bar = html.Div([
+        make_checkbox(other_pathogen.title() + " Round " + str(other_round) + " Scenario Selection",
+                      "other-scenario", options=other_scen_dict, value=[def_scen],
+                      style={"display": "inline-block", "margin-left": "5%", "width": "75%"})
     ], style=bar_style)
     plot_bar = [bar, multi_pathogen_notes(pathogen, other_pathogen, website, style=note_style)]
     return html.Div(plot_bar)
@@ -174,21 +220,21 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
     if traj_slider_style is None:
         traj_slider_style = {"display": "inline-block", "margin-left": "5%", "width": "60%"}
     traj_slider = html.Div([
-                    html.P("Number of Trajectories to plot"),
-                    html.Div([
-                        "The performance of the website might be impacted negatively by the selection of high "
-                        "number of trajectories to plot"
-                    ]),
-                    html.Br(),
-                    dcc.Slider(min_slide, max_slide, 10, value=step_slide, id='sample-slider')
-                ], style=traj_slider_style)
+        html.P("Number of Trajectories to plot"),
+        html.Div([
+            "The performance of the website might be impacted negatively by the selection of high "
+            "number of trajectories to plot"
+        ]),
+        html.Br(),
+        dcc.Slider(min_slide, max_slide, 10, value=step_slide, id='sample-slider')
+    ], style=traj_slider_style)
     check_med = html.Div([
-                    dcc.Checklist(
-                        id="median-checkbox",
-                        options=[{
-                            "label": "Show Median",
-                            "value": True,
-                        }])
+        dcc.Checklist(
+            id="median-checkbox",
+            options=[{
+                "label": "Show Median",
+                "value": True,
+            }])
     ], className=css_med, hidden=not checkbox_median)
     plot_bar = [traj_slider, check_med]
     return html.Div(plot_bar)
@@ -254,7 +300,7 @@ def heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=None, sel_quant=0.5,
                                css_class=css_class)
     scenario_sel2 = make_dropdown("Comparison Scenario", "scenario2-dropdown", options=scen_choice,
                                   value=scen_choice[1], clearable=True)
-    order_radio = make_radio_items("Location Order", id_name="order_heatmap",  value="Geographical",
+    order_radio = make_radio_items("Location Order", id_name="order_heatmap", value="Geographical",
                                    options=["Alphabetical", "Geographical"], inline=True, css_class=css_h_radio)
     method_dropdown = make_dropdown("Standardization Approach", "method_dropdown", options=method_list,
                                     value=method_list[0], css_class=css_h_drop, clearable=clearable)
@@ -421,8 +467,8 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
         css_class=css_sel, inline=inline_radio)
     week_slider = make_slider("Wks to Show Beyond Observed Data", "week-slider", 6, max_horizon,
                               4, css_class=css_sel, tooltip=tooltip)
-    radio_week = make_radio_items("Week", "week-radio", [max_horizon/2, max_horizon],
-                                  max_horizon/2, css_class=css_sel, inline=inline_radio)
+    radio_week = make_radio_items("Week", "week-radio", [max_horizon / 2, max_horizon],
+                                  max_horizon / 2, css_class=css_sel, inline=inline_radio)
     # Prepare plot bar
     if plot_tab in ["scenario"]:
         plot_bar = [checkbox]
@@ -443,6 +489,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
                                       quant_opt=quant_opt, sel_quant=sel_quant, bar_style=multi_bar_style,
                                       note_style=multi_note_style,  clearable=clearable, css_class=css_sel,
                                       css_multi_radio=css_multi_radio)
+    elif plot_tab in ["multipat_plot_comb"]:
+        plot_bar = multi_pathogen_bar_comp(pathogen, other_scenario, def_scen, other_pathogen, other_round, website,
+                                           bar_style=multi_bar_style, note_style=multi_note_style)
     elif plot_tab in ["spaghetti"]:
         plot_bar = spaghetti_bar(
             min_slide=traj_min, max_slide=traj_max, step_slide=traj_step, checkbox_median=check_med, css_med=css_sel,
@@ -457,7 +506,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
         plot_bar = sample_peak_bar(tf_options=tf_options, clearable=clearable, css_class=css_sel,
                                    css_bar_plot=css_bar_plot)
     elif plot_tab in ["peak_time_model"]:
-        checkbox_hide = make_checkbox("", "ensemble-checkbox",  hide=True, style={},
+        checkbox_hide = make_checkbox("", "ensemble-checkbox", hide=True, style={},
                                       options=[{"label": "", "value": "False"}])
         order_radio = make_radio_items("Location Order", id_name="order_heatmap", value="Geographical",
                                        options=["Alphabetical", "Geographical"], inline=True, css_class=css_h_radio)
