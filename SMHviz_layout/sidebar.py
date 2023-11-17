@@ -315,7 +315,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                           css_radio=css_radio)
     # Location
     list_location = list(location_info["location_name"])
-    list_location.remove('U.S. Minor Outlying Islands')
+    if 'U.S. Minor Outlying Islands' in list_location:
+        list_location.remove('U.S. Minor Outlying Islands')
     if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution", "multipat_plot",
                "peak_size", "multipat_plot_comb"]:
         location_sel = location_selection(list_location, css_drop=css_drop, css_drop_disabled=css_drop_disabled,
