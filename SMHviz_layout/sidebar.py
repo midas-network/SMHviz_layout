@@ -131,7 +131,7 @@ def location_selection(location_info, sel_value="US", disabled=False, clearable=
     return location_sel
 
 
-def target_selection(target_dict, def_target, title="Target", id_name="target-radio", disabled=False,
+def target_selection(target_dict, def_target, title="Target:", id_name="target-radio", disabled=False,
                      css_p_disabled="p disabled", css_radio="radioItems", css_radio_disabled="radioItems disabled"):
     """Create the expected Target or Age Group component
 
@@ -368,9 +368,10 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     if age_group is not None:
         if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "state_deviation", "trend_map",
                    "risk_map", "model_distribution"]:
-            age_group_sel = target_selection(age_group, "0-130", title="Age Group", id_name="age_group-radio")
+            age_group_sel = target_selection(age_group, "0-130", title="Age Group:",
+                                             id_name="age_group-radio")
         else:
-            age_group_sel = target_selection(age_group, "0-130", disabled=True, title="Age Group",
+            age_group_sel = target_selection(age_group, "0-130", disabled=True, title="Age Group:",
                                              id_name="age_group-radio", css_p_disabled=css_p_disabled,
                                              css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     else:
@@ -389,8 +390,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         html.Br(),
         target_sel,
         html.Br(),
-        ui_sel,
+        age_group_sel,
         html.Br(),
-        age_group_sel
+        ui_sel,
     ], className=css_left_col)
     return sidebar
