@@ -1,7 +1,7 @@
 from dash import html, dcc
 
 
-def make_checkbox(title, id_name, options, hide=False, style=None, value=None):
+def make_checkbox(title, id_name, options, hide=False, style=None, value=None, check_style=None):
     """Create a Div component with a Checkbox
 
     Make a Div component with a Checkbox and a title. For more information, please consult
@@ -20,6 +20,8 @@ def make_checkbox(title, id_name, options, hide=False, style=None, value=None):
     :type style: dict | str
     :parameter value: Possible value selected by default
     :type value: str | list | int | float | bool |dict
+    :parameter style: Style associated with each element of the checkbox, by default None
+    :type style: dict | str
     :return: Div component with a Checkbox component
     """
     if style is None:
@@ -27,12 +29,12 @@ def make_checkbox(title, id_name, options, hide=False, style=None, value=None):
     if value is not None:
         checkbox = html.Div([
             html.P(title),
-            dcc.Checklist(id=id_name, options=options, value=value)
+            dcc.Checklist(id=id_name, options=options, value=value, style=check_style)
         ], style=style)
     else:
         checkbox = html.Div([
             html.P(title),
-            dcc.Checklist(id=id_name, options=options)
+            dcc.Checklist(id=id_name, options=options, style=check_style)
         ], style=style)
     if hide is True:
         checkbox = html.Div(checkbox, hidden=True)
