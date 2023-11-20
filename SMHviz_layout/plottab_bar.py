@@ -140,7 +140,8 @@ def multi_pathogen_bar_comp(pathogen, other_scenario, def_scen, other_pathogen, 
     bar = html.Div([
         make_checkbox(other_pathogen.title() + " Round " + str(other_round) + " Scenario Selection",
                       "other-scenario", options=other_scen_dict, value=[def_scen],
-                      style={"display": "inline-block", "margin-left": "5%", "width": "75%"})
+                      style={"display": "inline-block", "margin-left": "5%", "width": "75%"},
+                      check_style={"display": "inline-grid"})
     ], style=bar_style)
     plot_bar = [bar, multi_pathogen_notes(pathogen, other_pathogen, website, style=note_style)]
     return html.Div(plot_bar)
