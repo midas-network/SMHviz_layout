@@ -9,10 +9,12 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None):
 
     :parameter pathogen: Name of the pathogen
     :type pathogen: str
-    :parameter other_pathogen: Name of the additional pathogen
-    :type other_pathogen: str
-    :parameter website: Website link to the additional pathogen SMH hub website
-    :type website: str
+    :parameter other_pathogen: Name of the additional pathogen (string or list of multiple pathogens in the same order
+      as the `website` parameter)
+    :type other_pathogen: str | list
+    :parameter website: Website link to the additional pathogen SMH hub website (string or list of multiple website
+      in the same order as the `other_pathogen` parameter)
+    :type website: str | list
     :parameter style: Style associated with the checkbox,
         if `None`: {"display": "inline-block", "margin-left": "5%", "width": "25%"}
     :type style: dict | str
@@ -20,23 +22,34 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None):
     """
     if style is None:
         style = {"margin-left": "5%", "width": "95%"}
+    if len(other_pathogen) > 1:
+        other_pathogen_name = ", ".join(other_pathogen).title()
+
+    else:
+        other_pathogen_name = other_pathogen[0].title()
+    if len(website) > 1:
+        other_pathogen_website = list()
+        for i in range(len(website)):
+            web = html.A(other_pathogen[i].title() + " Scenario Modeling Hub Website", target="blank", href=website[i])
+            if i < len(website):
+                web = html.Span([web, ", "])
+            other_pathogen_website.append(web)
+    else:
+        other_pathogen_website = website[0]
     notes = html.Div([
         html.P(["These projections were produced by combining separate multi-model ensemble projections of " +
-                pathogen.title() + " and " + other_pathogen.title() +
-                ". We do not account for any interaction between " + pathogen.title() + " and " +
-                other_pathogen.title() + ", which could include behavioral or immunological interactions that " +
+                pathogen.title() + ", " + other_pathogen_name +
+                ". We do not account for any interaction between " + pathogen.title() + ", " +
+                other_pathogen_name + ", which could include behavioral or immunological interactions that " +
                 "might modify the impacts of one or both of these viruses. For more information on " +
-                other_pathogen.title() + " projections and  scenarios, please consult the ",
-                html.A(other_pathogen.title() + " Scenario Modeling Hub Website", target="blank",
-                       href=website), html.Span(".")
-                ]),
+                other_pathogen_name + " projections and  scenarios, please consult the ",
+                html.Span(other_pathogen_website), html.Span(".")]),
     ], style=style)
     return notes
 
 
-def multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other_round, website,
-                       quant_opt=None, sel_quant=0.5, bar_style=None, note_style=None, clearable=False,
-                       css_class="plot_bar_sel", css_multi_radio="multi_bar_radio"):
+def multi_pathogen_bar(pathogen, other_pathogen, quant_opt=None, sel_quant=0.5, bar_style=None, note_style=None,
+                       clearable=False, css_class="plot_bar_sel", css_multi_radio="multi_bar_radio"):
     """Create Multi-pathogen specific top bar filter
 
     Create Multi-pathogen specific top bar filter containing:
@@ -49,18 +62,11 @@ def multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other
 
     :parameter pathogen: Name of the principal pathogen
     :type pathogen: str
-    :parameter other_scenario: A dictionary with the id and associated name for the additional pathogen selected
-        round scenario, for example: {'id': ['A', 'B'], 'name':['Scenario A'. 'Scenario B']}. The keys: `id` and
-        `name` need to be included in the dictionary.
-    :type other_scenario: dict
-    :parameter def_scen: `id` information of the selected additional pathogen scenario
-    :type def_scen: str
-    :parameter other_pathogen: Name of the additional pathogen
-    :type other_pathogen: str
-    :parameter other_round: Number of the additional pathogen round associated in this tab (for example: 13)
-    :type other_round: int
-    :parameter website: Website link to the additional pathogen SMH hub website
-    :type website: str
+    :parameter other_pathogen: Dictionary containing the information for the other pathogens for the multi-pathogen
+      plots. The dictionary should contain the keys: `scenario` (dictionary with `id` and `name` keys), `default_sel`
+      (id(s) of the scenario selected by default), `name` (name of the pathogen), `round_int` (integer representing
+      the specific round of the associated pathogen), `website` (associated website)
+    :type other_pathogen: dict | list
     :parameter quant_opt: Value of the associated quantiles dropdowns. If `None`: [0.05, 0.25, 0.5, 0.75, 0.95]
     :type quant_opt: list
     :parameter sel_quant: Default selected value of the quantiles dropdowns
@@ -83,6 +89,7 @@ def multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other
         bar_style = {'width': '100%', 'display': 'flex'}
     if quant_opt is None:
         quant_opt = [0.05, 0.25, 0.5, 0.75, 0.95]
+    other_scenario = other_pathogen["scenario"]
     other_scen_sel = list()
     for i in range(len(other_scenario["name"])):
         other_scen_sel.append(other_scenario["name"][i])
@@ -90,18 +97,18 @@ def multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other
     bar = html.Div([
         make_dropdown(pathogen.title() + " Quantile", pathogen + "-quantile_dropdown", quant_opt, sel_quant,
                       clearable=clearable, css_class=css_class),
-        make_radio_items(other_pathogen.title() + " Round " + str(other_round) + " Scenario Selection",
-                         "other-scenario", options=other_scen_dict, value=def_scen,
-                         css_class=css_multi_radio),
-        make_dropdown(other_pathogen.title() + " Quantile", "other-quantile_dropdown", quant_opt, sel_quant,
-                      clearable=clearable, css_class=css_class)
+        make_radio_items(other_pathogen["name"].title() + " Round " + str(other_pathogen["round_int"]) +
+                         " Scenario Selection" + ':', "other-scenario", options=other_scen_dict,
+                         value=other_pathogen["default_sel"][0], css_class=css_multi_radio),
+        make_dropdown(other_pathogen["name"].title() + " Quantile", "other-quantile_dropdown", quant_opt,
+                      sel_quant, clearable=clearable, css_class=css_class)
     ], style=bar_style)
-    plot_bar = [bar, multi_pathogen_notes(pathogen, other_pathogen, website, style=note_style)]
+    plot_bar = [bar, multi_pathogen_notes(pathogen, [other_pathogen["name"]],
+                                          [other_pathogen["website"]], style=note_style)]
     return html.Div(plot_bar)
 
 
-def multi_pathogen_bar_comp(pathogen, other_scenario, def_scen, other_pathogen, other_round, website, bar_style=None,
-                            note_style=None):
+def multi_pathogen_bar_comp(pathogen, other_pathogen, bar_style=None, note_style=None):
     """Create Combine Multi-pathogen specific top bar filter
 
     Create Combine Multi-pathogen specific top bar filter containing:
@@ -111,18 +118,11 @@ def multi_pathogen_bar_comp(pathogen, other_scenario, def_scen, other_pathogen, 
 
     :parameter pathogen: Name of the principal pathogen
     :type pathogen: str
-    :parameter other_scenario: A dictionary with the id and associated name for the additional pathogen selected
-        round scenario, for example: {'id': ['A', 'B'], 'name':['Scenario A'. 'Scenario B']}. The keys: `id` and
-        `name` need to be included in the dictionary.
-    :type other_scenario: dict
-    :parameter def_scen: `id` information of the selected additional pathogen scenario
-    :type def_scen: str
-    :parameter other_pathogen: Name of the additional pathogen
-    :type other_pathogen: str
-    :parameter other_round: Number of the additional pathogen round associated in this tab (for example: 13)
-    :type other_round: int
-    :parameter website: Website link to the additional pathogen SMH hub website
-    :type website: str
+    :parameter other_pathogen: List of dictionaries containing the information for the other pathogens for the
+       multi-pathogen plots. The dictionary should contain the keys: `scenario` (dictionary with `id` and `name` keys),
+      `default_sel`(id(s) of the scenario selected by default), `name` (name of the pathogen), `round_int` (integer
+      representing the specific round of the associated pathogen), `website` (associated website)
+    :type other_pathogen: list | None
     :parameter bar_style: Style associated with the checkbox,
         if `None`: {'width': '100%', 'display': 'flex'}
     :type bar_style: dict | str
@@ -133,17 +133,25 @@ def multi_pathogen_bar_comp(pathogen, other_scenario, def_scen, other_pathogen, 
     """
     if bar_style is None:
         bar_style = {'width': '100%', 'display': 'flex'}
-    other_scen_sel = list()
-    for i in range(len(other_scenario["name"])):
-        other_scen_sel.append(other_scenario["name"][i])
-    other_scen_dict = dict(zip(other_scenario["id"], other_scen_sel))
-    bar = html.Div([
-        make_checkbox(other_pathogen.title() + " Round " + str(other_round) + " Scenario Selection",
-                      "other-scenario", options=other_scen_dict, value=[def_scen],
-                      style={"display": "inline-block", "margin-left": "5%", "width": "75%"},
-                      check_style={"display": "inline-grid"})
-    ], style=bar_style)
-    plot_bar = [bar, multi_pathogen_notes(pathogen, other_pathogen, website, style=note_style)]
+    list_bar = list()
+    list_patho_name = list()
+    list_website = list()
+    width = round(99 / len(other_pathogen))
+    for patho_information in other_pathogen:
+        patho_scen_sel = list()
+        for i in range(len(patho_information["scenario"]["name"])):
+            patho_scen_sel.append(patho_information["scenario"]["name"][i])
+        patho_scen_dict = dict(zip(patho_information["scenario"]["id"], patho_scen_sel))
+        bar = make_checkbox(patho_information["name"].title() + " Round " + str(patho_information["round_int"]) +
+                            " Scenario Selection" + ':', "other-scenario_" + patho_information["name"].lower(),
+                            options=patho_scen_dict, value=patho_information["default_sel"],
+                            style={"display": "inline-block", "margin-left": "5%", "width": str(width) + "%"},
+                            check_style={"display": "inline-grid"})
+        list_bar.append(bar)
+        list_patho_name.append(patho_information["name"].title())
+        list_website.append(patho_information["website"])
+    bar = html.Div(list_bar, style=bar_style)
+    plot_bar = [bar, multi_pathogen_notes(pathogen, list_patho_name, list_website, style=note_style)]
     return html.Div(plot_bar)
 
 
@@ -351,7 +359,7 @@ def sample_peak_bar(tf_options=None, clearable=False, css_class="plot_bar_sel", 
 
 
 def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_panel, sc_sidebar_option, pathogen,
-                  scen_choice, other_scenario, def_scen, other_pathogen, other_round, website, plot_tab,
+                  scen_choice, other_pathogen, plot_tab,
                   quant_opt=None, sel_quant=0.5, method_list=None, tf_options=None, traj_min=10, traj_max=100,
                   traj_step=10, check_med=True, style_checkbox=None, css_sel="plot_bar_sel",
                   inline_radio=True, clearable=False, tooltip=None, radio_comp_style=None, multi_note_style=None,
@@ -381,18 +389,12 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     :type pathogen: str
     :parameter scen_choice: list of scenario id associated with the round (need to have at least 2 scenarios)
     :type scen_choice: list
-    :parameter other_scenario: A dictionary with the id and associated name for the additional pathogen selected
-        round scenario, for example: {'id': ['A', 'B'], 'name':['Scenario A'. 'Scenario B']}. The keys: `id` and
-        name` need to be included in the dictionary.
-    :type other_scenario: dict
-    :parameter def_scen: `id` information of the selected additional pathogen scenario
-    :type def_scen: str
-    :parameter other_pathogen: Name of the additional pathogen
-    :type other_pathogen: str
-    :parameter other_round: Number of the additional pathogen round associated in this tab (for example: 13)
-    :type other_round: int
-    :parameter website: Website link to the additional pathogen SMH hub website
-    :type website: str
+    :parameter other_pathogen: List of dictionaries containing the information for the other pathogens for the
+       multi-pathogen plots. The dictionary should contain the keys: `scenario` (dictionary with `id` and `name` keys),
+      `default_sel`(id(s) of the scenario selected by default), `name` (name of the pathogen), `round_int` (integer
+      representing the specific round of the associated pathogen), `website` (associated website). For the
+      multi-pathogen plot (not combined) only the first element of the list will be used.
+    :type other_pathogen: list | None
     :parameter plot_tab: The id name of the plot selected tab ("scenario" for example, associated with "Scenario Plot")
     :type plot_tab: str
     :parameter quant_opt: Value of the associated quantiles dropdowns. If `None`: [0.05, 0.25, 0.5, 0.75, 0.95]
@@ -486,12 +488,12 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     elif plot_tab in ["model_distribution"]:
         plot_bar = [checkbox, radio_target, radio_week]
     elif plot_tab in ["multipat_plot"]:
-        plot_bar = multi_pathogen_bar(pathogen, other_scenario, def_scen, other_pathogen, other_round, website,
+        plot_bar = multi_pathogen_bar(pathogen, other_pathogen[0],
                                       quant_opt=quant_opt, sel_quant=sel_quant, bar_style=multi_bar_style,
                                       note_style=multi_note_style,  clearable=clearable, css_class=css_sel,
                                       css_multi_radio=css_multi_radio)
     elif plot_tab in ["multipat_plot_comb"]:
-        plot_bar = multi_pathogen_bar_comp(pathogen, other_scenario, def_scen, other_pathogen, other_round, website,
+        plot_bar = multi_pathogen_bar_comp(pathogen, other_pathogen,
                                            bar_style=multi_bar_style, note_style=multi_note_style)
     elif plot_tab in ["spaghetti"]:
         plot_bar = spaghetti_bar(
