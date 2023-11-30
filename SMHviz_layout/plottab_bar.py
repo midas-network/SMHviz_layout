@@ -138,10 +138,10 @@ def multi_pathogen_bar_comp(pathogen, other_pathogen, bar_style=None, note_style
     list_website = list()
     width = round(99 / len(other_pathogen))
     for patho_information in other_pathogen:
-        patho_scen_sel = list()
+        patho_scen_dict = list()
         for i in range(len(patho_information["scenario"]["name"])):
-            patho_scen_sel.append(patho_information["scenario"]["name"][i])
-        patho_scen_dict = dict(zip(patho_information["scenario"]["id"], patho_scen_sel))
+            patho_scen_dict.append({"label": patho_information["scenario"]["name"][i],
+                                    "value": patho_information["scenario"]["id"][i]})
         bar = make_checkbox(patho_information["name"].title() + " Round " + str(patho_information["round_int"]) +
                             " Scenario Selection" + ':', "other-scenario_" + patho_information["name"].lower(),
                             options=patho_scen_dict, value=patho_information["default_sel"],
