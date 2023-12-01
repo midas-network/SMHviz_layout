@@ -1,7 +1,7 @@
 from SMHviz_layout.utils import *
 
 
-def multi_pathogen_notes(pathogen, other_pathogen, website, style=None):
+def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble=True):
     """Create a Div component with the notes associated with the multi-pathogen plot
 
     Make a html.Div() object containing the multi-pathogen plot associated notes, both pathogen names and
@@ -18,31 +18,37 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None):
     :parameter style: Style associated with the checkbox,
         if `None`: {"display": "inline-block", "margin-left": "5%", "width": "25%"}
     :type style: dict | str
+    :parameter ensemble: Boolean to append the noted to say; "combining multi-model ensemble projections" (with or
+      without the work "ensemble")
+    :type ensemble: bool
     :return: a html.Div() component containing the multi-pathogen plot associated notes
     """
     if style is None:
         style = {"margin-left": "5%", "width": "95%"}
     if len(other_pathogen) > 1:
-        other_pathogen_name = ", ".join(other_pathogen).title()
-
+        other_pathogen_name = ", ".join(other_pathogen)
     else:
-        other_pathogen_name = other_pathogen[0].title()
+        other_pathogen_name = other_pathogen[0]
     if len(website) > 1:
         other_pathogen_website = list()
         for i in range(len(website)):
-            web = html.A(other_pathogen[i].title() + " Scenario Modeling Hub Website", target="blank", href=website[i])
-            if i < len(website):
+            web = html.A(other_pathogen[i] + " Scenario Modeling Hub Website", target="blank", href=website[i])
+            if i < len(website) - 1:
                 web = html.Span([web, ", "])
             other_pathogen_website.append(web)
     else:
-        other_pathogen_website = website[0]
+        other_pathogen_website = html.A(other_pathogen[0] + " Scenario Modeling Hub Website", target="blank",
+                                        href=website[0])
+    if ensemble is True:
+        ensemble = "ensemble "
+    else:
+        ensemble = ""
     notes = html.Div([
-        html.P(["These projections were produced by combining separate multi-model ensemble projections of " +
-                pathogen.title() + ", " + other_pathogen_name +
-                ". We do not account for any interaction between " + pathogen.title() + ", " +
-                other_pathogen_name + ", which could include behavioral or immunological interactions that " +
-                "might modify the impacts of one or both of these viruses. For more information on " +
-                other_pathogen_name + " projections and  scenarios, please consult the ",
+        html.P(["These projections were produced by combining separate multi-model " + ensemble + "projections of " +
+                pathogen + ", " + other_pathogen_name +
+                ". We do not account for any interaction between these diseases, which could include behavioral or "
+                "immunological interactions that might modify the impacts of one or more of these viruses. For more "
+                "information on " + other_pathogen_name + " projections and  scenarios, please consult the ",
                 html.Span(other_pathogen_website), html.Span(".")]),
     ], style=style)
     return notes
@@ -95,12 +101,12 @@ def multi_pathogen_bar(pathogen, other_pathogen, quant_opt=None, sel_quant=0.5, 
         other_scen_sel.append(other_scenario["name"][i])
     other_scen_dict = dict(zip(other_scenario["id"], other_scen_sel))
     bar = html.Div([
-        make_dropdown(pathogen.title() + " Quantile", pathogen + "-quantile_dropdown", quant_opt, sel_quant,
+        make_dropdown(pathogen + " Quantile", pathogen.lower() + "-quantile_dropdown", quant_opt, sel_quant,
                       clearable=clearable, css_class=css_class),
-        make_radio_items(other_pathogen["name"].title() + " Round " + str(other_pathogen["round_int"]) +
+        make_radio_items(other_pathogen["name"] + " Round " + str(other_pathogen["round_int"]) +
                          " Scenario Selection" + ':', "other-scenario", options=other_scen_dict,
                          value=other_pathogen["default_sel"][0], css_class=css_multi_radio),
-        make_dropdown(other_pathogen["name"].title() + " Quantile", "other-quantile_dropdown", quant_opt,
+        make_dropdown(other_pathogen["name"] + " Quantile", "other-quantile_dropdown", quant_opt,
                       sel_quant, clearable=clearable, css_class=css_class)
     ], style=bar_style)
     plot_bar = [bar, multi_pathogen_notes(pathogen, [other_pathogen["name"]],
@@ -142,16 +148,16 @@ def multi_pathogen_bar_comp(pathogen, other_pathogen, bar_style=None, note_style
         for i in range(len(patho_information["scenario"]["name"])):
             patho_scen_dict.append({"label": patho_information["scenario"]["name"][i],
                                     "value": patho_information["scenario"]["id"][i]})
-        bar = make_checkbox(patho_information["name"].title() + " Round " + str(patho_information["round_int"]) +
+        bar = make_checkbox(patho_information["name"] + " Round " + str(patho_information["round_int"]) +
                             " Scenario Selection" + ':', "other-scenario_" + patho_information["name"].lower(),
                             options=patho_scen_dict, value=patho_information["default_sel"],
                             style={"display": "inline-block", "margin-left": "5%", "width": str(width) + "%"},
                             check_style={"display": "inline-grid"})
         list_bar.append(bar)
-        list_patho_name.append(patho_information["name"].title())
+        list_patho_name.append(patho_information["name"])
         list_website.append(patho_information["website"])
     bar = html.Div(list_bar, style=bar_style)
-    plot_bar = [bar, multi_pathogen_notes(pathogen, list_patho_name, list_website, style=note_style)]
+    plot_bar = [bar, multi_pathogen_notes(pathogen, list_patho_name, list_website, style=note_style, ensemble=False)]
     return html.Div(plot_bar)
 
 
