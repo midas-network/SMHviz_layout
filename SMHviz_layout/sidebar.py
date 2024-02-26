@@ -131,18 +131,22 @@ def location_selection(location_info, sel_value="US", disabled=False, clearable=
     return location_sel
 
 
-def target_selection(target_dict, def_target, disabled=False, css_p_disabled="p disabled", css_radio="radioItems",
-                     css_radio_disabled="radioItems disabled"):
-    """Create the expected Target component
+def target_selection(target_dict, def_target, title="Target:", id_name="target-radio", disabled=False,
+                     css_p_disabled="p disabled", css_radio="radioItems", css_radio_disabled="radioItems disabled"):
+    """Create the expected Target or Age Group component
 
-    Creates the component to select (or not) Target information:
-    a radioItem is generated (id: `target-radio`) with the value in `def_target` selected.
+    Creates the component to select (or not) Target or Age Group information:
+    a radioItem is generated (id: `target-radio` or `age_group-radio`) with the value in `def_target` selected.
 
     :parameter target_dict: A dictionary with target name (as in submission file) as keys and
-    target full name as value
+       target full name as value
     :type target_dict: dict
     :parameter def_target: Character indicating default target selection (for example: "hosp")
     :type def_target: str
+    :parameter title: Title of the filter
+    :type title: str
+    :parameter id_name: Internal identifier name
+    :type id_name: str
     :parameter disabled: Boolean, to disabled to output component or not (False by default)
     :type disabled: bool
     :parameter css_radio: string, name of the associated CSS element, see documentation
@@ -158,15 +162,15 @@ def target_selection(target_dict, def_target, disabled=False, css_p_disabled="p 
         for i in target_dict:
             list_opt.append({"label": target_dict[i], "value": i, "disabled": True})
         target_sel = html.Div([
-            html.P("Target:", className=css_p_disabled),
+            html.P(title, className=css_p_disabled),
             dcc.RadioItems(
-                id="target-radio", labelClassName=css_radio_disabled, options=list_opt)
+                id=id_name, labelClassName=css_radio_disabled, options=list_opt)
         ])
     else:
         target_sel = html.Div([
-            html.P("Target:"),
+            html.P(title),
             dcc.RadioItems(
-                id="target-radio", labelClassName=css_radio,
+                id=id_name, labelClassName=css_radio,
                 options=target_dict, value=def_target)
         ])
     return target_sel
@@ -219,10 +223,10 @@ def ui_selection(options, value, disabled=False, add_description=None,
 
 
 def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict, target_dict, def_target,
-                 ui_sel_list=None, ui_val=95, unselect_scenario=None, cumulative=True, multi_ui=True, round_name=None,
-                 css_left_col="column left", css_check="checklist", css_radio="radioItems", css_p_disabled="p disabled",
-                 css_check_disabled="checklist disabled", css_radio_disabled="radioItems disabled", css_drop="dropdown",
-                 css_drop_disabled="dropdown disabled"):
+                 age_group=None, ui_sel_list=None, ui_val=95, unselect_scenario=None, cumulative=True, multi_ui=True,
+                 round_name=None, css_left_col="column left", css_check="checklist", css_radio="radioItems",
+                 css_p_disabled="p disabled", css_check_disabled="checklist disabled",
+                 css_radio_disabled="radioItems disabled", css_drop="dropdown", css_drop_disabled="dropdown disabled"):
     """Create the sidebar on the SMH visualization websites
 
     The sidebar is depending on the round and on the plot tab selected.
@@ -311,7 +315,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                           css_radio=css_radio)
     # Location
     list_location = list(location_info["location_name"])
-    list_location.remove('U.S. Minor Outlying Islands')
+    if 'U.S. Minor Outlying Islands' in list_location:
+        list_location.remove('U.S. Minor Outlying Islands')
     if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution", "multipat_plot",
                "peak_size", "multipat_plot_comb"]:
         location_sel = location_selection(list_location, css_drop=css_drop, css_drop_disabled=css_drop_disabled,
@@ -360,6 +365,18 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     else:
         ui_sel = ui_selection(ui_sel_list, ui_val, disabled=True, css_p_disabled=css_p_disabled,
                               css_radio_disabled=css_radio_disabled, css_radio=css_radio)
+    # Age group
+    if age_group is not None:
+        if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "state_deviation", "trend_map",
+                   "risk_map", "model_distribution"]:
+            age_group_sel = target_selection(age_group, "0-130", title="Age Group:",
+                                             id_name="age_group-radio")
+        else:
+            age_group_sel = target_selection(age_group, "0-130", disabled=True, title="Age Group:",
+                                             id_name="age_group-radio", css_p_disabled=css_p_disabled,
+                                             css_radio_disabled=css_radio_disabled, css_radio=css_radio)
+    else:
+        age_group_sel = None
     # Round name
     if round_name is None:
         round_name = "Round " + str(round_number)
@@ -374,6 +391,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         html.Br(),
         target_sel,
         html.Br(),
-        ui_sel
+        age_group_sel,
+        html.Br(),
+        ui_sel,
     ], className=css_left_col)
     return sidebar

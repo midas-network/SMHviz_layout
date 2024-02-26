@@ -20,8 +20,8 @@ def make_checkbox(title, id_name, options, hide=False, style=None, value=None, c
     :type style: dict | str
     :parameter value: Possible value selected by default
     :type value: str | list | int | float | bool |dict
-    :parameter style: Style associated with each element of the checkbox, by default None
-    :type style: dict | str
+    :parameter check_style: Style associated with each element of the checkbox, by default None
+    :type check_style: dict | str
     :return: Div component with a Checkbox component
     """
     if style is None:
