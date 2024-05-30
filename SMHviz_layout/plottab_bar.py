@@ -209,7 +209,7 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
 
 
 def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=True, css_med="plot_bar_sel",
-                  traj_slider_style=None):
+                  traj_slider_style=None, traj_by_model=False):
     """Create Individual Trajectories specific top bar filter
 
     Create Individual Trajectories top bar filter containing:
@@ -230,6 +230,8 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
     :parameter traj_slider_style: Style associated with the checkbox,
         if `None`: {"display": "inline-block", "margin-left": "5%", "width": "60%"}
     :type traj_slider_style: dict | str
+    :parameter traj_by_model: Boolean, add multiple checkbox to add models to include in the output
+    :type traj_by_model: bool
     :return: a Div component with the Individual Trajectories specific top bar
     """
     if traj_slider_style is None:
@@ -241,7 +243,7 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
             "number of trajectories to plot"
         ]),
         html.Br(),
-        dcc.Slider(min_slide, max_slide, 10, value=step_slide, id='sample-slider')
+        dcc.Slider(min_slide, max_slide, step_slide, value=step_slide, id='sample-slider')
     ], style=traj_slider_style)
     check_med = html.Div([
         dcc.Checklist(
@@ -251,7 +253,15 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
                 "value": True,
             }])
     ], className=css_med, hidden=not checkbox_median)
-    plot_bar = [traj_slider, check_med]
+    if traj_by_model is True:
+        model_checkbox = html.Div([
+            html.P("Select Team-Model to include in the plot:",),
+            dcc.Checklist(id="t_model_check", options=[], style={"display": "inline-flex"},
+                          labelStyle={"padding-right": 10})
+        ], style={"display": "inline-block", "margin-left": "5%", "width": "95%"})
+    else:
+        model_checkbox = None
+    plot_bar = [traj_slider, check_med, model_checkbox]
     return html.Div(plot_bar)
 
 
@@ -371,7 +381,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
                   inline_radio=True, clearable=False, tooltip=None, radio_comp_style=None, multi_note_style=None,
                   multi_bar_style=None, css_multi_radio="multi_bar_radio", traj_slider_style=None,
                   css_h_radio="radio_heatmap", css_h_drop="dropdown_heatmap", css_bar_plot="plot_bar",
-                  heatmap_style=None):
+                  heatmap_style=None, traj_by_model=False):
     """Create plot specific top bar filter
 
     Create plot top bar filter depending on the round and on the plot tab selected
@@ -457,6 +467,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     :parameter heatmap_style: Style associated with the complete Div component,
         if `None`: {"display": "inline-block", "width": "100%"}
     :type heatmap_style: dict | str
+    :parameter traj_by_model: Boolean, add multiple checkbox to add models to include in the output
+    :type traj_by_model: bool
+    :return: a Div component with the Individual Trajectories specific top bar
     :return: Code for the plot specific top bar
     """
     # Prepare Specific Plot tab Selection component
@@ -504,7 +517,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     elif plot_tab in ["spaghetti"]:
         plot_bar = spaghetti_bar(
             min_slide=traj_min, max_slide=traj_max, step_slide=traj_step, checkbox_median=check_med, css_med=css_sel,
-            traj_slider_style=traj_slider_style)
+            traj_slider_style=traj_slider_style, traj_by_model=traj_by_model)
 
     elif plot_tab in ["heatmap"]:
         plot_bar = heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=quant_opt, sel_quant=sel_quant,
