@@ -1,7 +1,7 @@
 from dash import html
 
 
-def make_notes_definition(definitions, notes_left, notes_right,
+def make_notes_definition(definitions, notes_left, notes_right, html_id="html-table",
                           css_title="title", css_column_left="column left", css_column_right="column right",
                           css_column_notes_left="column_notes left_notes",
                           css_column_notes_right="column_notes right_notes", css_row="row",
@@ -24,6 +24,7 @@ def make_notes_definition(definitions, notes_left, notes_right,
     :parameter definitions: A Div component containing the content of the "Definitions" section
     :parameter notes_left:  A Div component containing the content of the "Notes" section
     :parameter notes_right:  A Div component containing the content of the "Notes" section
+    parameter html_id:  string, id of the HTML table
     :parameter css_title: string, name of the associated CSS element, see documentation
     :parameter css_column_left: string, name of the associated CSS element, see documentation
     :parameter css_column_right: string, name of the associated CSS element, see documentation
@@ -40,7 +41,7 @@ def make_notes_definition(definitions, notes_left, notes_right,
                 html.H2("Definitions", className=css_title),
                 definitions
             ], className=css_column_left),
-            html.Div(className=css_column_right, id="html-table")
+            html.Div(className=css_column_right, id=html_id)
         ], className=css_row),
         html.Div([
             html.H2("Notes", className=css_title),
