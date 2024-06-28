@@ -363,7 +363,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                       css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     # UI
     if tab in ["scenario", "model_specific", "scenario_disp", "model_disp"]:
-        if (multi_ui is True) and (tab in ["scenario"]):
+        if (multi_ui is True) and (tab in ["scenario", "scenario_disp"]):
             ui_sel_list.append({"label": "Multi", "value": -1})
             ui_text = html.Span("'multi' displays 95%, 90%, 80%, and 50% uncertainty intervals, shaded from lightest "
                                 "(95%) to darkest (50%)", className="span_sidebar")
@@ -388,10 +388,10 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         age_group_sel = None
     if race_ethnicity is not None:
         if tab in ["scenario", "spaghetti", "scenario_disp", "spaghetti_disp"]:
-            race_ethnicity_sel = target_selection(race_ethnicity, "Overall", title="Race - Ethnicity:",
+            race_ethnicity_sel = target_selection(race_ethnicity, "overall", title="Race - Ethnicity:",
                                                   id_name="race_ethnicity-radio")
         else:
-            race_ethnicity_sel = target_selection(race_ethnicity, "Overall", disabled=True,
+            race_ethnicity_sel = target_selection(race_ethnicity, "overall", disabled=True,
                                                   title="Race - Ethnicity:", id_name="race_ethnicity-radio",
                                                   css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
                                                   css_radio=css_radio)
