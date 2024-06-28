@@ -492,7 +492,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     radio_week = make_radio_items("Week", "week-radio", [max_horizon / 2, max_horizon],
                                   max_horizon / 2, css_class=css_sel, inline=inline_radio)
     # Prepare plot bar
-    if plot_tab in ["scenario"]:
+    if plot_tab in ["scenario", "scenario_disp"]:
         plot_bar = [checkbox]
     elif plot_tab in ["model_specific"]:
         plot_bar = [radio_target, model_sel, checkbox]
@@ -514,7 +514,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     elif plot_tab in ["multipat_plot_comb"]:
         plot_bar = multi_pathogen_bar_comp(pathogen, other_pathogen,
                                            bar_style=multi_bar_style, note_style=multi_note_style)
-    elif plot_tab in ["spaghetti"]:
+    elif plot_tab in ["spaghetti", "spaghetti_disp"]:
         plot_bar = spaghetti_bar(
             min_slide=traj_min, max_slide=traj_max, step_slide=traj_step, checkbox_median=check_med, css_med=css_sel,
             traj_slider_style=traj_slider_style, traj_by_model=traj_by_model)

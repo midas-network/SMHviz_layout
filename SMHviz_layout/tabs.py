@@ -1,7 +1,8 @@
 from dash import dcc, html
 
 
-def make_tab_plots(sel_plot, tab_name_dict, show=None, plot_sel=None, css_plot_tabs="plot_tabs",
+def make_tab_plots(sel_plot, tab_name_dict, show=None, plot_sel=None, tab_id_name="tabs-plot",
+                   tab_content_id="plot_tabs-content", css_plot_tabs="plot_tabs",
                    css_plot_tabs_container="plot_tabs-container", css_right_sidebar="column right-sidebar",
                    css_plot_tab="plot_tab", css_plot_tab_sel="plot_tab--selected"):
     """Create the plot tabs on the SMH visualization websites
@@ -29,6 +30,11 @@ def make_tab_plots(sel_plot, tab_name_dict, show=None, plot_sel=None, css_plot_t
     :parameter plot_sel: A character string corresponding of the internal id tab name of the plot to select by default,
         first on the `sel_plot` list, if parameter set to `None`
     :type plot_sel: str
+    :parameter tab_id_name: A character string corresponding of to the plot tabs id name, by default `"tabs-plot"`.
+    :type tab_id_name: str
+    :parameter tab_content_id:  A character string corresponding of to the plot tab content id name, by default
+        `"plot_tabs-content"`.
+    :type tab_content_id: str
     :parameter css_plot_tabs: string, name of the associated CSS element, see documentation
     :type css_plot_tabs: str
     :parameter css_plot_tabs_container: string, name of the associated CSS element, see documentation
@@ -44,10 +50,10 @@ def make_tab_plots(sel_plot, tab_name_dict, show=None, plot_sel=None, css_plot_t
     """
     if sel_plot is None:
         plot_tab = html.Div([
-            dcc.Tabs(id="tabs-plot", parent_className=css_plot_tabs,
+            dcc.Tabs(id=tab_id_name, parent_className=css_plot_tabs,
                      className=css_plot_tabs_container, children=list()),
             html.Br(),
-            html.Div(show, id="plot_tabs_content")
+            html.Div(show, id=tab_content_id)
         ], className=css_right_sidebar)
     else:
         plot_tab_list = list()
@@ -58,9 +64,9 @@ def make_tab_plots(sel_plot, tab_name_dict, show=None, plot_sel=None, css_plot_t
         if plot_sel is None:
             plot_sel = sel_plot[0]
         plot_tab = html.Div([
-            dcc.Tabs(id="tabs-plot", value=plot_sel, parent_className=css_plot_tabs,
+            dcc.Tabs(id=tab_id_name, value=plot_sel, parent_className=css_plot_tabs,
                      className=css_plot_tabs_container, children=plot_tab_list),
-            html.Div(id="plot_tabs-content")
+            html.Div(id=tab_content_id)
         ], className=css_right_sidebar)
     return plot_tab
 
