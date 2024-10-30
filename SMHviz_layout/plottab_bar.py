@@ -501,6 +501,12 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
         plot_bar = [checkbox]
     elif plot_tab in ["model_specific", "model_disp"]:
         plot_bar = [radio_target, model_sel, checkbox]
+    elif plot_tab in ["scen_sample_comp"]:
+        radio_type_target = make_radio_items(title="Type", id_name="comp-type-radio", value="abs",
+                                             options=[{"label": "Absolute", "value": "abs"},
+                                                      {"label": "Relative", "value": "rel"}],
+                                             css_class=css_sel, inline=inline_radio)
+        plot_bar = [radio_type_target, checkbox]
     elif plot_tab in ["scen_comparison"]:
         plot_bar = scen_comp_bar(max_horizon, sc_panel_name, multi_panel=sc_multi_panel,
                                  sidebar_option=sc_sidebar_option, css_class=css_sel, tooltip=tooltip,
@@ -516,7 +522,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
                                       quant_opt=quant_opt, sel_quant=sel_quant, bar_style=multi_bar_style,
                                       note_style=multi_note_style,  clearable=clearable, css_class=css_sel,
                                       css_multi_radio=css_multi_radio)
-    elif plot_tab in ["multipat_plot_comb"]:
+    elif plot_tab in ["multipat_plot_comb", "multipat_plot_comb1"]:
         plot_bar = multi_pathogen_bar_comp(pathogen, other_pathogen,
                                            bar_style=multi_bar_style, note_style=multi_note_style)
     elif plot_tab in ["spaghetti", "spaghetti_disp"]:
