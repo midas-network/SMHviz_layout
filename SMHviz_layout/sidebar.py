@@ -328,7 +328,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         list_location.remove('U.S. Minor Outlying Islands')
     if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution", "multipat_plot",
                "peak_size", "multipat_plot_comb", "multipat_plot_comb1", "scenario_disp", "spaghetti_disp",
-               "model_disp", "scen_sample_comp_disp"]:
+               "model_disp", "scen_sample_comp", "scen_sample_comp_disp"]:
         location_sel = location_selection(list_location, css_drop=css_drop, css_drop_disabled=css_drop_disabled,
                                           css_p_disabled=css_p_disabled)
     else:
@@ -343,7 +343,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     if tab in ["scenario", "spaghetti", "scenario_disp", "spaghetti_disp"]:
         target_sel = target_selection(target_dict, def_targ)
     elif tab in ["state_deviation", "trend_map", "multipat_plot", "proj_peaks", "heatmap", "sample_peak", "risk_map",
-                 "multipat_plot_comb", "multipat_plot_comb1", "scen_sample_comp"]:
+                 "multipat_plot_comb", "multipat_plot_comb1", "scen_sample_comp", "scen_sample_comp_disp"]:
         if tab == "risk_map" and cumulative is True:
             search_term = "cum "
         else:
