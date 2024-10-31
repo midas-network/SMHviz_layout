@@ -387,8 +387,9 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                              css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     else:
         age_group_sel = None
+    # Race ethnicity
     if race_ethnicity is not None:
-        if tab in ["scenario", "spaghetti", "scenario_disp", "spaghetti_disp"]:
+        if tab in ["scenario", "spaghetti", "scenario_disp", "spaghetti_disp", "scen_sample_comp_disp"]:
             race_ethnicity_sel = target_selection(race_ethnicity, "overall", title="Race - Ethnicity:",
                                                   id_name="race_ethnicity-radio")
         else:
