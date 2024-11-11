@@ -1,5 +1,4 @@
 import re
-import pandas as pd
 from SMHviz_layout.utils import *
 
 
@@ -132,14 +131,13 @@ def location_selection(location_info, sel_value="US", disabled=False, clearable=
 
 
 def prep_target(target_type, target_dict, def_target):
+    def_targ = None
     if target_type != "all":
         search_term = target_type
         for targ in target_dict.keys():
             if len(re.findall(search_term + def_target, targ)) > 0:
                 def_targ = targ
                 break
-            else:
-                def_targ = None
         sel_target = list()
         for i in target_dict:
             if re.search(search_term, i) is not None:
@@ -150,8 +148,6 @@ def prep_target(target_type, target_dict, def_target):
             if len(re.findall(def_target, targ)) > 0:
                 def_targ = targ
                 break
-            else:
-                def_targ = None
     return {"def_targ": def_targ, "target_dict": target_dict}
 
 
@@ -250,7 +246,7 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
                  list_location, loc_disabled,
                  target_dict, def_targ, targ_disabled,
                  ui_sel_list, ui_val, ui_text, ui_disabled,
-                 age_group=None, age_group_def=None, age_group_disabled = True,
+                 age_group=None, age_group_def=None, age_group_disabled=True,
                  race_ethnicity=None, race_ethnicity_def=None, race_ethnicity_disabled=True,
                  round_name=None, css_left_col="column left", css_check="checklist", css_radio="radioItems",
                  css_p_disabled="p disabled", css_check_disabled="checklist disabled",
@@ -305,7 +301,7 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
                                       css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     # Location
     location_sel = location_selection(list_location, disabled=loc_disabled, css_drop=css_drop,
-                                      css_drop_disabled=css_drop_disabled,css_p_disabled=css_p_disabled)
+                                      css_drop_disabled=css_drop_disabled, css_p_disabled=css_p_disabled)
 
     # Target
     target_sel = target_selection(target_dict, def_targ, disabled=targ_disabled, css_p_disabled=css_p_disabled,
@@ -317,17 +313,20 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
                           css_radio=css_radio)
     # Age group (optional)
     if age_group is not None:
-        age_group_sel = target_selection(age_group, age_group_def, disabled=age_group_disabled, title="Age Group:",
-                                         id_name="age_group-radio", css_p_disabled=css_p_disabled,
-                                         css_radio_disabled=css_radio_disabled, css_radio=css_radio)
+        age_group_sel = html.Div([target_selection(age_group, age_group_def, disabled=age_group_disabled,
+                                                   title="Age Group:", id_name="age_group-radio",
+                                                   css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
+                                                   css_radio=css_radio),
+                                 html.Br()])
     else:
         age_group_sel = None
     # Race Ethnicity
     if race_ethnicity is not None:
-        race_ethnicity_sel = target_selection(race_ethnicity, race_ethnicity_def,
-                                              disabled=race_ethnicity_disabled, title="Race Ethnicity Group:",
-                                              id_name="race_ethnicity-radio", css_p_disabled=css_p_disabled,
-                                              css_radio_disabled=css_radio_disabled, css_radio=css_radio)
+        race_ethnicity_sel = html.Div([target_selection(race_ethnicity, race_ethnicity_def,
+                                                        disabled=race_ethnicity_disabled, title="Race Ethnicity Group:",
+                                                        id_name="race_ethnicity-radio", css_p_disabled=css_p_disabled,
+                                                        css_radio_disabled=css_radio_disabled, css_radio=css_radio),
+                                       html.Br()])
     else:
         race_ethnicity_sel = None
     # Round name
@@ -345,9 +344,7 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
         target_sel,
         html.Br(),
         age_group_sel,
-        html.Br(),
         race_ethnicity_sel,
-        html.Br(),
         ui_sel,
     ], className=css_left_col)
     return sidebar
