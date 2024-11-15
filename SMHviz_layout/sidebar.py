@@ -2,9 +2,7 @@ import re
 from SMHviz_layout.utils import *
 
 
-def scenario_selection(scen_check, invert_scen, unselect_scenario=None, div_type="radio", disabled=False,
-                       css_check="checklist", css_radio="radioItems", css_p_disabled="p disabled",
-                       css_check_disabled="checklist disabled", css_radio_disabled="radioItems disabled"):
+def scenario_selection(scen_check, invert_scen, unselect_scenario=None, div_type="radio", disabled=False):
     """Create the expected Scenario component
 
     Creates the component to select (or not) Scenario information, depending
@@ -32,16 +30,6 @@ def scenario_selection(scen_check, invert_scen, unselect_scenario=None, div_type
     :type div_type: str
     :parameter disabled: Boolean, to disabled to output component or not (False by default)
     :type disabled: bool
-    :parameter css_check: string, name of the associated CSS element, see documentation
-    :type css_check: str
-    :parameter css_radio: string, name of the associated CSS element, see documentation
-    :type css_radio: str
-    :parameter css_p_disabled: string, name of the associated CSS element, see documentation
-    :type css_p_disabled: str
-    :parameter css_check_disabled: string, name of the associated CSS element, see documentation
-    :type css_check_disabled: str
-    :parameter css_radio_disabled: string, name of the associated CSS element, see documentation
-    :type css_radio_disabled: str
     :return: a Div component for Scenario selection
     """
     # Prerequisite
@@ -60,39 +48,30 @@ def scenario_selection(scen_check, invert_scen, unselect_scenario=None, div_type
     if div_type == "radio":
         if disabled is True:
             scenario_sel = html.Div([
-                html.P("Scenario:", className=css_p_disabled),
-                dcc.RadioItems(
-                    id="scenario-radio", labelClassName=css_radio_disabled, options=list_opt)])
+                html.P("Scenario:"),
+                dcc.RadioItems(id="scenario-radio", options=list_opt)])
         else:
             scenario_sel = html.Div([
                 html.P("Scenario:"),
-                dcc.RadioItems(
-                    id="scenario-radio", labelClassName=css_radio,
-                    options=scen_choice, value=scen_value[0])
+                dcc.RadioItems(id="scenario-radio", options=scen_choice, value=scen_value[0])
             ])
     elif div_type == "checklist":
         if disabled is True:
             scenario_sel = html.Div([
                 html.P("Scenario:"),
-                dcc.Checklist(
-                    id="scenario-checklist", labelClassName=css_check_disabled,
-                    options=list_opt)])
+                dcc.Checklist(id="scenario-checklist", options=list_opt)])
         else:
             scenario_sel = html.Div([
                 html.P("Scenario:"),
-                dcc.Checklist(
-                    id="scenario-checklist", labelClassName=css_check,
-                    options=scen_choice, value=scen_value)])
+                dcc.Checklist(id="scenario-checklist", options=scen_choice, value=scen_value)])
     else:
         scenario_sel = html.Div([
-            html.P("Scenario:", className=css_p_disabled),
-            dcc.RadioItems(
-                id="scenario-radio", labelClassName=css_radio_disabled, options=list_opt)])
+            html.P("Scenario:"),
+            dcc.RadioItems(id="scenario-radio", options=list_opt)])
     return scenario_sel
 
 
-def location_selection(location_info, sel_value="US", disabled=False, clearable=False, css_drop="dropdown",
-                       css_drop_disabled="dropdown disabled", css_p_disabled="p disabled"):
+def location_selection(location_info, sel_value="US", disabled=False, clearable=False):
     """Create the expected Location component
 
     Creates the dropdown component to select (or not) Location information (id: `location-dropdown`).
@@ -105,27 +84,17 @@ def location_selection(location_info, sel_value="US", disabled=False, clearable=
     :type disabled: bool
     :parameter clearable: Boolean to indicate if the Dropdown is clearable or not, by default `False`
     :type clearable: bool
-    :parameter css_drop: string, name of the associated CSS element, see documentation
-    :type css_drop: str
-    :parameter css_drop_disabled: string, name of the associated CSS element, see documentation
-    :type css_drop_disabled: str
-    :parameter css_p_disabled: string, name of the associated CSS element, see documentation
-    :type css_p_disabled: str
     :return: a Div component with Dropdown component for Location selection
     """
     if disabled is False:
         location_sel = html.Div([
             html.P("Location:"),
-            dcc.Dropdown(
-                id='location-dropdown', clearable=clearable, className=css_drop,
-                options=location_info, value=sel_value)
+            dcc.Dropdown(id='location-dropdown', clearable=clearable, options=location_info, value=sel_value)
         ])
     else:
         location_sel = html.Div([
-            html.P("Location:", className=css_p_disabled),
-            dcc.Dropdown(
-                id='location-dropdown', clearable=False, className=css_drop_disabled,
-                options=location_info, value=None, disabled=True)
+            html.P("Location:"),
+            dcc.Dropdown(id='location-dropdown', clearable=False, options=location_info, value=None, disabled=True)
         ])
     return location_sel
 
@@ -151,8 +120,7 @@ def prep_target(target_type, target_dict, def_target):
     return {"def_targ": def_targ, "target_dict": target_dict}
 
 
-def target_selection(target_dict, def_target, title="Target:", id_name="target-radio", disabled=False,
-                     css_p_disabled="p disabled", css_radio="radioItems", css_radio_disabled="radioItems disabled"):
+def target_selection(target_dict, def_target, title="Target:", id_name="target-radio", disabled=False):
     """Create the expected Target or Age Group component
 
     Creates the component to select (or not) Target or Age Group information:
@@ -169,12 +137,6 @@ def target_selection(target_dict, def_target, title="Target:", id_name="target-r
     :type id_name: str
     :parameter disabled: Boolean, to disabled to output component or not (False by default)
     :type disabled: bool
-    :parameter css_radio: string, name of the associated CSS element, see documentation
-    :type css_radio: str
-    :parameter css_p_disabled: string, name of the associated CSS element, see documentation
-    :type css_p_disabled: str
-    :parameter css_radio_disabled: string, name of the associated CSS element, see documentation
-    :type css_radio_disabled: str
     :return: Component for Target selection
     """
     if disabled is True:
@@ -182,22 +144,18 @@ def target_selection(target_dict, def_target, title="Target:", id_name="target-r
         for i in target_dict:
             list_opt.append({"label": target_dict[i], "value": i, "disabled": True})
         target_sel = html.Div([
-            html.P(title, className=css_p_disabled),
-            dcc.RadioItems(
-                id=id_name, labelClassName=css_radio_disabled, options=list_opt)
+            html.P(title),
+            dcc.RadioItems(id=id_name, options=list_opt)
         ])
     else:
         target_sel = html.Div([
             html.P(title),
-            dcc.RadioItems(
-                id=id_name, labelClassName=css_radio,
-                options=target_dict, value=def_target)
+            dcc.RadioItems(id=id_name, options=target_dict, value=def_target)
         ])
     return target_sel
 
 
-def ui_selection(options, value, disabled=False, add_description=None,
-                 css_radio="radioItems", css_p_disabled="p disabled", css_radio_disabled="radioItems disabled"):
+def ui_selection(options, value, disabled=False, add_description=None):
     """Create the expected Uncertainty Interval component
 
     Creates the component to select (or not) Uncertainty Interval information:
@@ -211,12 +169,6 @@ def ui_selection(options, value, disabled=False, add_description=None,
     :type disabled: bool
     :parameter add_description: a Span component with a text to add below the radioItems
     :type add_description: dash.html.Span.Span
-    :parameter css_radio: string, name of the associated CSS element, see documentation
-    :type css_radio: str
-    :parameter css_p_disabled: string, name of the associated CSS element, see documentation
-    :type css_p_disabled: str
-    :parameter css_radio_disabled: string, name of the associated CSS element, see documentation
-    :type css_radio_disabled: str
     :return: Component for Uncertainty Interval selection
     """
     # Prerequisite
@@ -224,17 +176,13 @@ def ui_selection(options, value, disabled=False, add_description=None,
         for i in options:
             i.update({"disabled": True})
         ui_sel = html.Div([
-            html.P("Uncertainty Interval: ", className=css_p_disabled),
-            dcc.RadioItems(
-                id="ui-radio", labelClassName=css_radio_disabled,
-                options=options)
+            html.P("Uncertainty Interval: "),
+            dcc.RadioItems(id="ui-radio", options=options)
         ])
     else:
         ui_sel = html.Div([
             html.P("Uncertainty Interval: "),
-            dcc.RadioItems(
-                id="ui-radio", labelClassName=css_radio,
-                options=options, value=value)
+            dcc.RadioItems(id="ui-radio", options=options, value=value)
         ])
         if add_description is not None:
             sel_comp = ui_sel.children + [html.Br(), add_description]
@@ -248,9 +196,7 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
                  ui_sel_list, ui_val, ui_text, ui_disabled,
                  age_group=None, age_group_def=None, age_group_disabled=True,
                  race_ethnicity=None, race_ethnicity_def=None, race_ethnicity_disabled=True,
-                 round_name=None, css_left_col="column left", css_check="checklist", css_radio="radioItems",
-                 css_p_disabled="p disabled", css_check_disabled="checklist disabled",
-                 css_radio_disabled="radioItems disabled", css_drop="dropdown", css_drop_disabled="dropdown disabled"):
+                 round_name=None):
     """Create the sidebar on the SMH visualization websites
 
     The sidebar is depending on the round and on the plot tab selected.
@@ -274,49 +220,25 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
     :type unselect_scenario: list
     :parameter round_name: Name of the round to display, if None "Round <Number>"
     :type round_name: str
-    :parameter css_left_col: string, name of the associated CSS element, see documentation
-    :type css_left_col: str
-    :parameter css_check: string, name of the associated CSS element, see documentation
-    :type css_check: str
-    :parameter css_radio: string, name of the associated CSS element, see documentation
-    :type css_radio: str
-    :parameter css_p_disabled: string, name of the associated CSS element, see documentation
-    :type css_p_disabled: str
-    :parameter css_check_disabled: string, name of the associated CSS element, see documentation
-    :type css_check_disabled: str
-    :parameter css_radio_disabled: string, name of the associated CSS element, see documentation
-    :type css_radio_disabled: str
-    :parameter css_drop: string, name of the associated CSS element, see documentation
-    :type css_drop: str
-    :parameter css_drop_disabled: string, name of the associated CSS element, see documentation
-    :type css_drop_disabled: str
     :return: a Div component with the sidebar code associated with the round and tab selected
     """
 
     # Tab-specific output
     # Scenario
     scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario, div_type=type_scen,
-                                      disabled=scen_disabled, css_check=css_check,
-                                      css_check_disabled=css_check_disabled, css_p_disabled=css_p_disabled,
-                                      css_radio_disabled=css_radio_disabled, css_radio=css_radio)
+                                      disabled=scen_disabled)
     # Location
-    location_sel = location_selection(list_location, disabled=loc_disabled, css_drop=css_drop,
-                                      css_drop_disabled=css_drop_disabled, css_p_disabled=css_p_disabled)
+    location_sel = location_selection(list_location, disabled=loc_disabled)
 
     # Target
-    target_sel = target_selection(target_dict, def_targ, disabled=targ_disabled, css_p_disabled=css_p_disabled,
-                                  css_radio_disabled=css_radio_disabled, css_radio=css_radio)
+    target_sel = target_selection(target_dict, def_targ, disabled=targ_disabled)
 
     # UI
-    ui_sel = ui_selection(ui_sel_list, ui_val, add_description=ui_text, disabled=ui_disabled,
-                          css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
-                          css_radio=css_radio)
+    ui_sel = ui_selection(ui_sel_list, ui_val, add_description=ui_text, disabled=ui_disabled)
     # Age group (optional)
     if age_group is not None:
         age_group_sel = html.Div([target_selection(age_group, age_group_def, disabled=age_group_disabled,
-                                                   title="Age Group:", id_name="age_group-radio",
-                                                   css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
-                                                   css_radio=css_radio),
+                                                   title="Age Group:", id_name="age_group-radio"),
                                  html.Br()])
     else:
         age_group_sel = None
@@ -324,8 +246,7 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
     if race_ethnicity is not None:
         race_ethnicity_sel = html.Div([target_selection(race_ethnicity, race_ethnicity_def,
                                                         disabled=race_ethnicity_disabled, title="Race Ethnicity Group:",
-                                                        id_name="race_ethnicity-radio", css_p_disabled=css_p_disabled,
-                                                        css_radio_disabled=css_radio_disabled, css_radio=css_radio),
+                                                        id_name="race_ethnicity-radio"),
                                        html.Br()])
     else:
         race_ethnicity_sel = None
@@ -346,5 +267,5 @@ def make_sidebar(round_number, scen_check, invert_scen, type_scen, scen_disabled
         age_group_sel,
         race_ethnicity_sel,
         ui_sel,
-    ], className=css_left_col)
+    ])
     return sidebar
