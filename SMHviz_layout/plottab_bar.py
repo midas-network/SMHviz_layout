@@ -23,6 +23,7 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble
     :type ensemble: bool
     :return: a html.Div() component containing the multi-pathogen plot associated notes
     """
+    print("---- Function deprecated -----")
     if style is None:
         style = {"margin-left": "5%", "width": "95%"}
     if len(other_pathogen) > 1:
@@ -91,6 +92,7 @@ def multi_pathogen_bar(pathogen, other_pathogen, quant_opt=None, sel_quant=0.5, 
     :type css_multi_radio: str
     :return: a Div component with the Multi-pathogen specific top bar
     """
+    print("---- Function deprecated -----")
     if bar_style is None:
         bar_style = {'width': '100%', 'display': 'flex'}
     if quant_opt is None:
@@ -137,6 +139,7 @@ def multi_pathogen_bar_comp(pathogen, other_pathogen, bar_style=None, note_style
     :type note_style: dict | str
     :return: a Div component with the Multi-pathogen specific top bar
     """
+    print("---- Function deprecated -----")
     if bar_style is None:
         bar_style = {'width': '100%', 'display': 'flex'}
     list_bar = list()
@@ -194,6 +197,7 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
     :type radio_comp_style: dict | str
     :return:  a Div component with the Scenario Comparison specific top bar
     """
+    print("---- Function deprecated -----")
     if radio_comp_style is None:
         radio_comp_style = {"display": "inline-block", "margin-left": "5%", "width": "45%"}
     week_slider = make_slider("Cumulative Starting From Projection Week:", "week-slider", 1,
@@ -234,6 +238,7 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
     :type traj_by_model: bool
     :return: a Div component with the Individual Trajectories specific top bar
     """
+    print("---- Function deprecated -----")
     if traj_slider_style is None:
         traj_slider_style = {"display": "inline-block", "margin-left": "5%", "width": "60%"}
     traj_slider = html.Div([
@@ -310,6 +315,7 @@ def heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=None, sel_quant=0.5,
     :type style: dict | str
     :return: a Div component with the Heatmap specific top bar
     """
+    print("---- Function deprecated -----")
     if style is None:
         style = {"display": "inline-block", "width": "100%"}
     if quant_opt is None:
@@ -359,6 +365,7 @@ def sample_peak_bar(tf_options=None, clearable=False, css_class="plot_bar_sel", 
     :type css_bar_plot: str
     :return: a Div component with the Peak specific top bar
     """
+    print("---- Function deprecated -----")
     if tf_options is None:
         tf_options = ["summer 2023", "winter 2023", "year 2023", "summer 2024", "winter 2024", "year 2024"]
     model_tf_sel = make_dropdown(title="Model", id_name='model_dropdown', options="Ensemble", value="ensemble",
@@ -472,6 +479,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     :return: a Div component with the Individual Trajectories specific top bar
     :return: Code for the plot specific top bar
     """
+    print("---- Function deprecated -----")
     # Prepare Specific Plot tab Selection component
     if method_list is None:
         method_list = ["population size", "all projection"]
