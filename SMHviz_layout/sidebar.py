@@ -378,7 +378,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     # Age group
     if age_group is not None:
         if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "state_deviation", "trend_map",
-                   "risk_map", "model_distribution"]:
+                   "risk_map", "model_distribution", "scen_sample_comp"]:
             age_group_sel = target_selection(age_group, "0-130", title="Age Group:",
                                              id_name="age_group-radio")
         else:
