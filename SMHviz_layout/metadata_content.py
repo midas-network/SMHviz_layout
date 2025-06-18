@@ -31,8 +31,8 @@ def make_dt_metadata(metadata_file):
 def make_abstract_tab(round_number, path="./visualization/data-visualization/model_abstracts/"):
     """Create the abstract page
 
-    Create the SMH round specific layout page for the abstract, with a dropdown containing the name of
-     all available abstract for the round.
+    Create the SMH round specific layout page for the abstract, with a dropdown containing the name
+     of all available abstract for the round.
 
     :parameter round_number: Numeric identifier of a specific round tab (for example "13")
     :type round_number: str
@@ -43,7 +43,7 @@ def make_abstract_tab(round_number, path="./visualization/data-visualization/mod
     file_list = os.listdir(path + "round" + str(round_number))
     checkbox_list = list()
     for i in file_list:
-        checkbox_entry = re.sub("\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md", "", i)
+        checkbox_entry = re.sub("\d{4}-\d{2}-\d{2}-|-([Aa])bstract.md", "", i)
         checkbox_list.append(checkbox_entry)
     checkbox_list.sort()
     output = html.Div([
@@ -71,18 +71,21 @@ def render_abstract(round_number, round_date, team_model_name,
 
     :parameter round_number: Numeric identifier of a specific round tab (for example "13")
     :type round_number: str
-    :parameter round_date: Date identifier of a specific round tab in a YYYY-MM-DD format (for example "2022-03-13")
+    :parameter round_date: Date identifier of a specific round tab in a YYYY-MM-DD format
+        (for example "2022-03-13")
     :type round_date: str
-    :parameter team_model_name: Name of a team_model (same as in the filename) specifying which abstract
-      content to read
+    :parameter team_model_name: Name of a team_model (same as in the filename) specifying which
+        abstract content to read
     :type team_model_name: str
     :parameter path: Relative path to the folder containing the abstracts information for all round
     :type path: str
     :return: Div component associated with a specific abstract
     """
-    filename = path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + "-Abstract.md"
-    if os.path.isfile(filename) is False:
-        filename = path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + "-abstract.md"
+    filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name +
+                "-Abstract.md")
+    if not os.path.isfile(filename):
+        filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name +
+                    "-abstract.md")
     with open(filename, "r") as f:
         markdown_text = f.read()
     return html.Div([
