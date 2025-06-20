@@ -28,7 +28,8 @@ def make_dt_metadata(metadata_file):
     return output
 
 
-def make_abstract_tab(round_number, path="./visualization/data-visualization/model_abstracts/"):
+def make_abstract_tab(round_number, path="./visualization/data-visualization/model_abstracts/", id_append="",
+                      pattern="\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md"):
     """Create the abstract page
 
     Create the SMH round specific layout page for the abstract, with a dropdown containing the name
@@ -38,26 +39,32 @@ def make_abstract_tab(round_number, path="./visualization/data-visualization/mod
     :type round_number: str
     :parameter path: Relative path to the folder containing the abstracts information for all round
     :type path: str
+    :parameter id_append: Character to append to the objects IDs.
+    :type id_append: str
+    :parameter pattern: pattern to extract team-model name from the file, by default
+        `"\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md"`
+    :type pattern: str
     :return: Div component associated with the round, tab selected and associated abstract
     """
     file_list = os.listdir(path + "round" + str(round_number))
     checkbox_list = list()
     for i in file_list:
-        checkbox_entry = re.sub("\d{4}-\d{2}-\d{2}-|-([Aa])bstract.md", "", i)
+        checkbox_entry = re.sub(pattern, "", i)
         checkbox_list.append(checkbox_entry)
     checkbox_list.sort()
     output = html.Div([
         dcc.Dropdown(
-            id='abstract-dropdown', clearable=False,
+            id='abstract' + id_append + '-dropdown', clearable=False,
             options=checkbox_list, value=checkbox_list[0]),
         html.Br(),
-        html.Div(id="abstract-output")
+        html.Div(id="abstract" + id_append + "-output")
     ])
     return output
 
 
 def render_abstract(round_number, round_date, team_model_name,
-                    path="./visualization/data-visualization/model_abstracts/"):
+                    path="./visualization/data-visualization/model_abstracts/", file_append=["-abstract", "-Abstract"],
+                    file_extension=".md"):
     """Create the abstract content
 
     Return the content of a specific abstract.
@@ -79,13 +86,20 @@ def render_abstract(round_number, round_date, team_model_name,
     :type team_model_name: str
     :parameter path: Relative path to the folder containing the abstracts information for all round
     :type path: str
+    :parameter file_append: List of possible additional text in the filename, if None (default), no additional text
+    :type file_append: list | None
+    :parameter file_extension: Character string, extension of the file, ".md" by default
+    :type file_extension: str
     :return: Div component associated with a specific abstract
     """
-    filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name +
-                "-Abstract.md")
-    if not os.path.isfile(filename):
-        filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name +
-                    "-abstract.md")
+    if file_append is None:
+        filename = path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + file_extension
+    else:
+        for i in file_append:
+            filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + i +
+                        file_extension)
+            if os.path.isfile(filename) is True:
+                break
     with open(filename, "r") as f:
         markdown_text = f.read()
     return html.Div([

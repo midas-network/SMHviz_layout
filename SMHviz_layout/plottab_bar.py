@@ -1,3 +1,5 @@
+import re
+
 from SMHviz_layout.utils import *
 
 
@@ -221,8 +223,9 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
     return html.Div(plot_bar, style={"width": "100%"})
 
 
-def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=True,
-                  css_med="plot_bar_sel", traj_slider_style=None, traj_by_model=False):
+
+def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=True, css_med="plot_bar_sel",
+                  traj_slider_style=None, traj_by_model=False, traj_model_id="t_model_check"):
     """Create Individual Trajectories specific top bar filter
 
     Create Individual Trajectories top bar filter containing:
@@ -248,6 +251,8 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
     :type traj_slider_style: dict | str
     :parameter traj_by_model: Boolean, add multiple checkbox to add models to include in the output
     :type traj_by_model: bool
+    :parameter traj_model_id: Character, id name of the model checkbox, by default "t_model_check"
+    :type traj_model_id: str
     :return: a Div component with the Individual Trajectories specific top bar
     """
     if traj_slider_style is None:
@@ -272,7 +277,7 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
     if traj_by_model:
         model_checkbox = html.Div([
             html.P("Select Team-Model to include in the plot:",),
-            dcc.Checklist(id="t_model_check", options=[], style={"display": "inline-flex"},
+            dcc.Checklist(id=traj_model_id, options=[], style={"display": "inline-flex"},
                           labelStyle={"padding-right": 10})
         ], style={"display": "inline-block", "margin-left": "5%", "width": "95%"})
     else:
@@ -402,15 +407,14 @@ def sample_peak_bar(tf_options=None, clearable=False, css_class="plot_bar_sel",
     return plot_bar
 
 
-def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_panel,
-                  sc_sidebar_option, pathogen,  scen_choice, other_pathogen, plot_tab,
-                  quant_opt=None, sel_quant=0.5, method_list=None, tf_options=None, traj_min=10,
-                  traj_max=100, traj_step=10, check_med=True, style_checkbox=None,
-                  css_sel="plot_bar_sel", inline_radio=True, clearable=False, tooltip=None,
-                  radio_comp_style=None, multi_note_style=None,  multi_bar_style=None,
-                  css_multi_radio="multi_bar_radio", traj_slider_style=None,
-                  css_h_radio="radio_heatmap", css_h_drop="dropdown_heatmap",
-                  css_bar_plot="plot_bar", heatmap_style=None, traj_by_model=False):
+def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_panel, sc_sidebar_option, pathogen,
+                  scen_choice, other_pathogen, plot_tab,
+                  quant_opt=None, sel_quant=0.5, method_list=None, tf_options=None, traj_min=10, traj_max=100,
+                  traj_step=10, check_med=True, style_checkbox=None, css_sel="plot_bar_sel",
+                  inline_radio=True, clearable=False, tooltip=None, radio_comp_style=None, multi_note_style=None,
+                  multi_bar_style=None, css_multi_radio="multi_bar_radio", traj_slider_style=None,
+                  css_h_radio="radio_heatmap", css_h_drop="dropdown_heatmap", css_bar_plot="plot_bar",
+                  heatmap_style=None, traj_by_model=False, mod_drop_id="model_dropdown"):
     """Create plot specific top bar filter
 
     Create plot top bar filter depending on the round and on the plot tab selected
@@ -506,8 +510,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     :type heatmap_style: dict | str
     :parameter traj_by_model: Boolean, add multiple checkbox to add models to include in the output
     :type traj_by_model: bool
+    parameter mod_drop_id: String, id of the model dropdown, by default `"model_dropdown"`
+    :type mod_drop_id: str
     :return: a Div component with the Individual Trajectories specific top bar
-    :return: Code for the plot specific top bar
     """
     # Prepare Specific Plot tab Selection component
     if method_list is None:
@@ -519,8 +524,8 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
         title="Outcome type", id_name="target_type-radio", value="inc",
         options=[{"label": "Incident", "value": "inc"}, {"label": "Cumulative", "value": "cum"}],
         css_class=css_sel, inline=inline_radio)
-    model_sel = make_dropdown(title="Model", id_name='model_dropdown', options=[val_default],
-                              value=val_default, css_class=css_sel, clearable=clearable)
+    model_sel = make_dropdown(title="Model", id_name=mod_drop_id, options=[val_default], value=val_default,
+                              css_class=css_sel, clearable=clearable)
     radio_yaxis = make_radio_items(
         title="Y-axis Scale", id_name="yaxis-scale-radio",
         options=[{"label": "Linear", "value": "linear"}, {"label": "Log", "value": "log"}],
@@ -530,11 +535,11 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     radio_week = make_radio_items("Week", "week-radio", [max_horizon / 2, max_horizon],
                                   max_horizon / 2, css_class=css_sel, inline=inline_radio)
     # Prepare plot bar
-    if plot_tab in ["scenario"]:
+    if plot_tab in ["scenario", "scenario_disp"]:
         plot_bar = [checkbox]
-    elif plot_tab in ["model_specific"]:
+    elif plot_tab in ["model_specific", "model_disp"]:
         plot_bar = [radio_target, model_sel, checkbox]
-    elif plot_tab in ["scen_sample_comp"]:
+    elif plot_tab in ["scen_sample_comp", "scen_sample_comp_disp"]:
         radio_type_target = make_radio_items(title="Type", id_name="comp-type-radio", value="abs",
                                              options=[{"label": "Absolute", "value": "abs"},
                                                       {"label": "Relative", "value": "rel"}],
@@ -559,12 +564,13 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     elif plot_tab in ["multipat_plot_comb", "multipat_plot_comb1"]:
         plot_bar = multi_pathogen_bar_comp(pathogen, other_pathogen,
                                            bar_style=multi_bar_style, note_style=multi_note_style)
-    elif plot_tab in ["spaghetti"]:
+    elif plot_tab in ["spaghetti", "spaghetti_disp"]:
+        traj_model_id = "t_model_check"
+        if len(re.findall("_disp$", plot_tab)):
+            traj_model_id = "t_disp_model_check"
         plot_bar = spaghetti_bar(
-            min_slide=traj_min, max_slide=traj_max, step_slide=traj_step,
-            checkbox_median=check_med, css_med=css_sel,
-            traj_slider_style=traj_slider_style, traj_by_model=traj_by_model)
-
+            min_slide=traj_min, max_slide=traj_max, step_slide=traj_step, checkbox_median=check_med, css_med=css_sel,
+            traj_slider_style=traj_slider_style, traj_by_model=traj_by_model, traj_model_id=traj_model_id)
     elif plot_tab in ["heatmap"]:
         plot_bar = heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=quant_opt,
                                sel_quant=sel_quant, method_list=method_list, clearable=clearable,

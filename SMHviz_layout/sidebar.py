@@ -123,7 +123,9 @@ def location_selection(location_info, sel_value="US", disabled=False, clearable=
     :type css_p_disabled: str
     :return: a Div component with Dropdown component for Location selection
     """
-    if not disabled:
+    if disabled is False:
+        if sel_value not in location_info:
+            sel_value = location_info[0]
         location_sel = html.Div([
             html.P("Location:"),
             dcc.Dropdown(
@@ -235,12 +237,11 @@ def ui_selection(options, value, disabled=False, add_description=None,
     return ui_sel
 
 
-def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict, target_dict,
-                 def_target, age_group=None, ui_sel_list=None, ui_val=95, unselect_scenario=None,
-                 cumulative=True, multi_ui=True, round_name=None, css_left_col="column left",
-                 css_check="checklist", css_radio="radioItems", css_p_disabled="p disabled",
-                 css_check_disabled="checklist disabled", css_radio_disabled="radioItems disabled",
-                 css_drop="dropdown", css_drop_disabled="dropdown disabled"):
+def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict, target_dict, def_target,
+                 age_group=None, race_ethnicity=None, ui_sel_list=None, ui_val=95, unselect_scenario=None,
+                 cumulative=True, multi_ui=True, round_name=None, css_left_col="column left", css_check="checklist",
+                 css_radio="radioItems", css_p_disabled="p disabled", css_check_disabled="checklist disabled",
+                 css_radio_disabled="radioItems disabled", css_drop="dropdown", css_drop_disabled="dropdown disabled"):
     """Create the sidebar on the SMH visualization websites
 
     The sidebar is depending on the round and on the plot tab selected.
@@ -265,9 +266,15 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         target full name as value
     :type target_dict: dict
     :parameter def_target: Character indicating default target selection (for example: "hosp")
-    :parameter ui_sel_list: A dictionary with the "label" and "value" information (example:
-        "{"label": "None", "value": 0}"). If `None`: [{"label": "None", "value": 0},
-        {"label": "50%", "value": 50}, {"label": "95%", "value": 95}]
+    :type def_target: str
+    :parameter age_group: A dictionary with age group (value) and associated variable (key), if `None` (default), no
+        age group filter in the output
+    :type age_group: None | dict
+    :parameter race_ethnicity:  A dictionary with race ethnicity (value) and associated variable (key), if `None`
+        (default), no race ethnicity filter in the output
+    :type race_ethnicity: None | dict
+    :parameter ui_sel_list: A dictionary with the "label" and "value" information (example: "{"label": "None", "value":
+        0}"). If `None`: [{"label": "None", "value": 0}, {"label": "50%", "value": 50}, {"label": "95%", "value": 95}]
     :type ui_sel_list: dict
     :parameter age_group: age group information, None if not included
     :type age_group: None | str | dict
@@ -325,12 +332,10 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                           css_p_disabled=css_p_disabled,
                                           css_radio_disabled=css_radio_disabled,
                                           css_radio=css_radio)
-    elif tab in ["state_deviation", "trend_map", "risk_map", "heatmap", "sample_peak"]:
-        scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario,
-                                          div_type="radio", css_check=css_check,
-                                          css_check_disabled=css_check_disabled,
-                                          css_p_disabled=css_p_disabled,
-                                          css_radio_disabled=css_radio_disabled,
+    elif tab in ["state_deviation", "trend_map", "risk_map", "heatmap", "sample_peak", "model_disp"]:
+        scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario, div_type="radio",
+                                          css_check=css_check, css_check_disabled=css_check_disabled,
+                                          css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
                                           css_radio=css_radio)
     else:
         scenario_sel = scenario_selection(scen_check, invert_scen, disabled=True,
@@ -343,11 +348,10 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     list_location = list(location_info["location_name"])
     if 'U.S. Minor Outlying Islands' in list_location:
         list_location.remove('U.S. Minor Outlying Islands')
-    if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution",
-               "multipat_plot", "peak_size", "multipat_plot_comb", "multipat_plot_comb1",
-               "scenario_disp", "spaghetti_disp", "model_disp", "scen_sample_comp"]:
-        location_sel = location_selection(list_location, css_drop=css_drop,
-                                          css_drop_disabled=css_drop_disabled,
+    if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution", "multipat_plot",
+               "peak_size", "multipat_plot_comb", "multipat_plot_comb1", "scenario_disp", "spaghetti_disp",
+               "model_disp", "scen_sample_comp", "scen_sample_comp_disp"]:
+        location_sel = location_selection(list_location, css_drop=css_drop, css_drop_disabled=css_drop_disabled,
                                           css_p_disabled=css_p_disabled)
     else:
         location_sel = location_selection(list_location, disabled=True, css_drop=css_drop,
@@ -359,11 +363,10 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         if len(re.findall(def_target, targ)) > 0:
             def_targ = targ
             break
-    if tab in ["scenario", "spaghetti"]:
+    if tab in ["scenario", "spaghetti", "scenario_disp", "spaghetti_disp"]:
         target_sel = target_selection(target_dict, def_targ)
-    elif tab in ["state_deviation", "trend_map", "multipat_plot", "proj_peaks", "heatmap",
-                 "sample_peak", "risk_map", "multipat_plot_comb", "multipat_plot_comb1",
-                 "scen_sample_comp"]:
+    elif tab in ["state_deviation", "trend_map", "multipat_plot", "proj_peaks", "heatmap", "sample_peak", "risk_map",
+                 "multipat_plot_comb", "multipat_plot_comb1", "scen_sample_comp", "scen_sample_comp_disp"]:
         if tab == "risk_map" and cumulative is True:
             search_term = "cum "
         else:
@@ -384,8 +387,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                       css_p_disabled=css_p_disabled,
                                       css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     # UI
-    if tab in ["scenario", "model_specific"]:
-        if (multi_ui is True) and (tab in ["scenario"]):
+    if tab in ["scenario", "model_specific", "scenario_disp", "model_disp"]:
+        if (multi_ui is True) and (tab in ["scenario", "scenario_disp"]):
             ui_sel_list.append({"label": "Multi", "value": -1})
             ui_text = html.Span("'multi' displays 95%, 90%, 80%, and 50% uncertainty "
                                 "intervals, shaded from lightest (95%) to darkest (50%)",
@@ -412,6 +415,18 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                              css_radio=css_radio)
     else:
         age_group_sel = None
+    # Race ethnicity
+    if race_ethnicity is not None:
+        if tab in ["scenario", "spaghetti", "scenario_disp", "spaghetti_disp", "scen_sample_comp_disp"]:
+            race_ethnicity_sel = target_selection(race_ethnicity, "overall", title="Race - Ethnicity:",
+                                                  id_name="race_ethnicity-radio")
+        else:
+            race_ethnicity_sel = target_selection(race_ethnicity, "overall", disabled=True,
+                                                  title="Race - Ethnicity:", id_name="race_ethnicity-radio",
+                                                  css_p_disabled=css_p_disabled, css_radio_disabled=css_radio_disabled,
+                                                  css_radio=css_radio)
+    else:
+        race_ethnicity_sel = None
     # Round name
     if round_name is None:
         round_name = "Round " + str(round_number)
@@ -427,6 +442,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         target_sel,
         html.Br(),
         age_group_sel,
+        html.Br(),
+        race_ethnicity_sel,
         html.Br(),
         ui_sel,
     ], className=css_left_col)
