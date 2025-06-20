@@ -1,8 +1,7 @@
 from dash import html
 
 
-
-def make_notes_definition(definitions, notes_left, notes_right,
+def make_notes_definition(definitions, notes_left, notes_right, html_id="html-table",
                           css_title="title", css_column_left="column left",
                           css_column_right="column right",
                           css_column_notes_left="column_notes left_notes",

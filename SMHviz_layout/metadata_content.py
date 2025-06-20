@@ -28,8 +28,8 @@ def make_dt_metadata(metadata_file):
     return output
 
 
-def make_abstract_tab(round_number, path="./visualization/data-visualization/model_abstracts/", id_append="",
-                      pattern="\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md"):
+def make_abstract_tab(round_number, path="./visualization/data-visualization/model_abstracts/",
+                      id_append="", pattern="\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md"):
     """Create the abstract page
 
     Create the SMH round specific layout page for the abstract, with a dropdown containing the name
@@ -63,8 +63,8 @@ def make_abstract_tab(round_number, path="./visualization/data-visualization/mod
 
 
 def render_abstract(round_number, round_date, team_model_name,
-                    path="./visualization/data-visualization/model_abstracts/", file_append=["-abstract", "-Abstract"],
-                    file_extension=".md"):
+                    path="./visualization/data-visualization/model_abstracts/",
+                    file_append=["-abstract", "-Abstract"], file_extension=".md"):
     """Create the abstract content
 
     Return the content of a specific abstract.
@@ -86,19 +86,21 @@ def render_abstract(round_number, round_date, team_model_name,
     :type team_model_name: str
     :parameter path: Relative path to the folder containing the abstracts information for all round
     :type path: str
-    :parameter file_append: List of possible additional text in the filename, if None (default), no additional text
+    :parameter file_append: List of possible additional text in the filename, if None (default), no
+        additional text
     :type file_append: list | None
     :parameter file_extension: Character string, extension of the file, ".md" by default
     :type file_extension: str
     :return: Div component associated with a specific abstract
     """
     if file_append is None:
-        filename = path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + file_extension
+        filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name +
+                    file_extension)
     else:
         for i in file_append:
-            filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name + i +
-                        file_extension)
-            if os.path.isfile(filename) is True:
+            filename = (path + "round" + str(round_number) + "/" + round_date + "-" +
+                        team_model_name + i + file_extension)
+            if os.path.isfile(filename):
                 break
     with open(filename, "r") as f:
         markdown_text = f.read()
