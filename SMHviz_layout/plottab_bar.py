@@ -1,6 +1,7 @@
 import re
 
 from SMHviz_layout.utils import *
+import dash_bootstrap_components as dbc
 
 
 def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble=True):
@@ -42,7 +43,7 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble
     else:
         other_pathogen_website = html.A(other_pathogen[0] + " Scenario Modeling Hub Website",
                                         target="blank", href=website[0])
-    if ensemble:
+    if ensemble is True:
         ensemble = "ensemble "
     else:
         ensemble = ""
@@ -215,9 +216,9 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
     panel_choice = html.Div([
         html.Br(), dcc.RadioItems(id="multi-ref", options=panel_name, value=panel_name[0])],
         style=radio_comp_style)
-    if not sidebar_option:
+    if sidebar_option is False:
         week_slider = html.Div(week_slider, hidden=True)
-    if not multi_panel:
+    if multi_panel is False:
         panel_choice = html.Div(panel_choice, hidden=True)
     plot_bar = [week_slider, panel_choice]
     return html.Div(plot_bar, style={"width": "100%"})
@@ -274,7 +275,7 @@ def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=Tr
                 "value": True,
             }])
     ], className=css_med, hidden=not checkbox_median)
-    if traj_by_model:
+    if traj_by_model is True:
         model_checkbox = html.Div([
             html.P("Select Team-Model to include in the plot:",),
             dcc.Checklist(id=traj_model_id, options=[], style={"display": "inline-flex"},
@@ -520,6 +521,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     checkbox = make_checkbox("", "ensemble-checkbox",
                              [{"label": "Show Additional Ensemble", "value": "True"}],
                              hide_ens, style=style_checkbox)
+    dbc.Tooltip("Click to display all available ensemble for the round. For more information, "
+                "please consult the metadata or Notes at the bottom of the page.",
+                target="ensemble-checkbox")
     radio_target = make_radio_items(
         title="Outcome type", id_name="target_type-radio", value="inc",
         options=[{"label": "Incident", "value": "inc"}, {"label": "Cumulative", "value": "cum"}],

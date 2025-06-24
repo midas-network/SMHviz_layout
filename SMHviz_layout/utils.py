@@ -36,7 +36,7 @@ def make_checkbox(title, id_name, options, hide=False, style=None, value=None, c
             html.P(title),
             dcc.Checklist(id=id_name, options=options, style=check_style)
         ], style=style)
-    if hide:
+    if hide is True:
         checkbox = html.Div(checkbox, hidden=True)
     return checkbox
 

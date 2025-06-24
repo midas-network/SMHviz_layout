@@ -64,7 +64,7 @@ def scenario_selection(scen_check, invert_scen, unselect_scenario=None, div_type
         list_opt.append({"label": scen_check[i], "value": i, "disabled": True})
     # Div component
     if div_type == "radio":
-        if disabled:
+        if disabled is True:
             scenario_sel = html.Div([
                 html.P("Scenario:", className=css_p_disabled),
                 dcc.RadioItems(
@@ -77,7 +77,7 @@ def scenario_selection(scen_check, invert_scen, unselect_scenario=None, div_type
                     options=scen_choice, value=scen_value[0])
             ])
     elif div_type == "checklist":
-        if disabled:
+        if disabled is True:
             scenario_sel = html.Div([
                 html.P("Scenario:"),
                 dcc.Checklist(
@@ -123,7 +123,7 @@ def location_selection(location_info, sel_value="US", disabled=False, clearable=
     :type css_p_disabled: str
     :return: a Div component with Dropdown component for Location selection
     """
-    if not disabled:
+    if disabled is False:
         if sel_value not in location_info:
             sel_value = location_info[0]
         location_sel = html.Div([
@@ -170,7 +170,7 @@ def target_selection(target_dict, def_target, title="Target:", id_name="target-r
     :type css_radio_disabled: str
     :return: Component for Target selection
     """
-    if disabled:
+    if disabled is True:
         list_opt = list()
         for i in target_dict:
             list_opt.append({"label": target_dict[i], "value": i, "disabled": True})
@@ -215,7 +215,7 @@ def ui_selection(options, value, disabled=False, add_description=None,
     :return: Component for Uncertainty Interval selection
     """
     # Prerequisite
-    if disabled:
+    if disabled is True:
         for i in options:
             i.update({"disabled": True})
         ui_sel = html.Div([
