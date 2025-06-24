@@ -1,6 +1,6 @@
 [project]
 name = "SMHviz_layout"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Lucie Contamin", email="contamin@pitt.edu" },
 ]
@@ -14,5 +14,6 @@ classifiers = [
 ]
 dependencies = [
     "dash>=2.7.0",
-    "pandas>=1.5.2"
+    "pandas>=1.5.2",
+    "dash_bootstrap_components"
 ]

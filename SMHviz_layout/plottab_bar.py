@@ -341,11 +341,16 @@ def heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=None, sel_quant=0.5,
         quant_opt = [0.05, 0.25, 0.5, 0.75, 0.95]
     if method_list is None:
         method_list = ["state sum", "population size", "all projection", "all sum"]
-
-    checkbox = make_checkbox("", "ensemble-checkbox",
-                             [{"label": "Show Additional Ensemble", "value": "True"}],
-                             hide_ens, style={"display": "inline-block", "margin-left": "5%",
-                                              "width": "15%"})
+    checkbox = html.Div([
+        html.P(""),
+        dbc.Checklist(id="ensemble-checkbox",
+                      options=[{"label": "Show Additional Ensemble", "value": "True"}]),
+        dbc.Tooltip("Click to display all available ensembles for the round.",
+                    target="ensemble-checkbox", placement="auto",
+                    style={"background": "#bfbfbf", "padding": "5px", "border-radius": "5px"}),
+    ], style={"display": "inline-block", "margin-left": "5%", "width": "25%"})
+    if hide_ens is True:
+        checkbox = html.Div(checkbox, hidden=True)
     quant_drop = make_dropdown("Quantile", "heatmap-quantile_dropdown", quant_opt, sel_quant,
                                clearable=clearable,
                                css_class=css_class)
@@ -518,12 +523,18 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     # Prepare Specific Plot tab Selection component
     if method_list is None:
         method_list = ["population size", "all projection"]
-    checkbox = make_checkbox("", "ensemble-checkbox",
-                             [{"label": "Show Additional Ensemble", "value": "True"}],
-                             hide_ens, style=style_checkbox)
-    dbc.Tooltip("Click to display all available ensemble for the round. For more information, "
-                "please consult the metadata or Notes at the bottom of the page.",
-                target="ensemble-checkbox")
+    if style_checkbox is None:
+        style_checkbox = {"display": "inline-block", "margin-left": "5%", "width": "25%"}
+    checkbox = html.Div([
+            html.P(""),
+            dbc.Checklist(id="ensemble-checkbox",
+                          options=[{"label": "Show Additional Ensemble", "value": "True"}]),
+            dbc.Tooltip("Click to display all available ensembles for the round.",
+                        target="ensemble-checkbox", placement="auto",
+                        style={"background": "#bfbfbf", "padding": "5px", "border-radius": "5px"}),
+        ], style=style_checkbox)
+    if hide_ens is True:
+        checkbox = html.Div(checkbox, hidden=True)
     radio_target = make_radio_items(
         title="Outcome type", id_name="target_type-radio", value="inc",
         options=[{"label": "Incident", "value": "inc"}, {"label": "Cumulative", "value": "cum"}],
