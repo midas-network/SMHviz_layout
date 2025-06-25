@@ -529,7 +529,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
             html.P(""),
             dbc.Checklist(id="ensemble-checkbox",
                           options=[{"label": "Show Additional Ensemble", "value": "True"}]),
-            dbc.Tooltip("Click to display all available ensembles for the round.",
+            dbc.Tooltip("Click to display all available ensembles for the round",
                         target="ensemble-checkbox", placement="auto",
                         style={"background": "#bfbfbf", "padding": "5px", "border-radius": "5px"}),
         ], style=style_checkbox)
