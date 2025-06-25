@@ -224,9 +224,9 @@ def scen_comp_bar(max_horizon, panel_name, multi_panel=False, sidebar_option=Fal
     return html.Div(plot_bar, style={"width": "100%"})
 
 
-
-def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=True, css_med="plot_bar_sel",
-                  traj_slider_style=None, traj_by_model=False, traj_model_id="t_model_check"):
+def spaghetti_bar(min_slide=10, max_slide=100, step_slide=10, checkbox_median=True,
+                  css_med="plot_bar_sel", traj_slider_style=None, traj_by_model=False,
+                  traj_model_id="t_model_check"):
     """Create Individual Trajectories specific top bar filter
 
     Create Individual Trajectories top bar filter containing:
@@ -413,14 +413,16 @@ def sample_peak_bar(tf_options=None, clearable=False, css_class="plot_bar_sel",
     return plot_bar
 
 
-def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_panel, sc_sidebar_option, pathogen,
-                  scen_choice, other_pathogen, plot_tab,
-                  quant_opt=None, sel_quant=0.5, method_list=None, tf_options=None, traj_min=10, traj_max=100,
-                  traj_step=10, check_med=True, style_checkbox=None, css_sel="plot_bar_sel",
-                  inline_radio=True, clearable=False, tooltip=None, radio_comp_style=None, multi_note_style=None,
-                  multi_bar_style=None, css_multi_radio="multi_bar_radio", traj_slider_style=None,
-                  css_h_radio="radio_heatmap", css_h_drop="dropdown_heatmap", css_bar_plot="plot_bar",
-                  heatmap_style=None, traj_by_model=False, mod_drop_id="model_dropdown"):
+def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_panel,
+                  sc_sidebar_option, pathogen, scen_choice, other_pathogen, plot_tab,
+                  quant_opt=None, sel_quant=0.5, method_list=None, tf_options=None, traj_min=10,
+                  traj_max=100, traj_step=10, check_med=True, style_checkbox=None,
+                  css_sel="plot_bar_sel", inline_radio=True, clearable=False, tooltip=None,
+                  radio_comp_style=None, multi_note_style=None, multi_bar_style=None,
+                  css_multi_radio="multi_bar_radio", traj_slider_style=None,
+                  css_h_radio="radio_heatmap", css_h_drop="dropdown_heatmap",
+                  css_bar_plot="plot_bar", heatmap_style=None, traj_by_model=False,
+                  mod_drop_id="model_dropdown", tooltipclass=None):
     """Create plot specific top bar filter
 
     Create plot top bar filter depending on the round and on the plot tab selected
@@ -516,8 +518,10 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     :type heatmap_style: dict | str
     :parameter traj_by_model: Boolean, add multiple checkbox to add models to include in the output
     :type traj_by_model: bool
-    parameter mod_drop_id: String, id of the model dropdown, by default `"model_dropdown"`
+    :parameter mod_drop_id: String, id of the model dropdown, by default `"model_dropdown"`
     :type mod_drop_id: str
+    :parameter tooltipclass: String, Classname for tooltip, None by default
+    :type mod_drop_id: str | None
     :return: a Div component with the Individual Trajectories specific top bar
     """
     # Prepare Specific Plot tab Selection component
@@ -530,8 +534,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
             dbc.Checklist(id="ensemble-checkbox",
                           options=[{"label": "Show Additional Ensemble", "value": "True"}]),
             dbc.Tooltip("Click to display all available ensembles for the round",
-                        target="ensemble-checkbox", placement="auto",
-                        style={"background": "#bfbfbf", "padding": "5px", "border-radius": "5px"}),
+                        target="ensemble-checkbox", placement="auto", className=tooltipclass),
         ], style=style_checkbox)
     if hide_ens is True:
         checkbox = html.Div(checkbox, hidden=True)
@@ -539,8 +542,8 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
         title="Outcome type", id_name="target_type-radio", value="inc",
         options=[{"label": "Incident", "value": "inc"}, {"label": "Cumulative", "value": "cum"}],
         css_class=css_sel, inline=inline_radio)
-    model_sel = make_dropdown(title="Model", id_name=mod_drop_id, options=[val_default], value=val_default,
-                              css_class=css_sel, clearable=clearable)
+    model_sel = make_dropdown(title="Model", id_name=mod_drop_id, options=[val_default],
+                              value=val_default, css_class=css_sel, clearable=clearable)
     radio_yaxis = make_radio_items(
         title="Y-axis Scale", id_name="yaxis-scale-radio",
         options=[{"label": "Linear", "value": "linear"}, {"label": "Log", "value": "log"}],
@@ -584,8 +587,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
         if len(re.findall("_disp$", plot_tab)):
             traj_model_id = "t_disp_model_check"
         plot_bar = spaghetti_bar(
-            min_slide=traj_min, max_slide=traj_max, step_slide=traj_step, checkbox_median=check_med, css_med=css_sel,
-            traj_slider_style=traj_slider_style, traj_by_model=traj_by_model, traj_model_id=traj_model_id)
+            min_slide=traj_min, max_slide=traj_max, step_slide=traj_step, checkbox_median=check_med,
+            css_med=css_sel, traj_slider_style=traj_slider_style, traj_by_model=traj_by_model,
+            traj_model_id=traj_model_id)
     elif plot_tab in ["heatmap"]:
         plot_bar = heatmap_bar(model_sel, scen_choice, hide_ens, quant_opt=quant_opt,
                                sel_quant=sel_quant, method_list=method_list, clearable=clearable,
