@@ -89,7 +89,8 @@ def make_dropdown(title, id_name, options, value, clearable=False, css_class="pl
     :return: Div component with a Dropdown component
     """
     model_sel = html.Div([html.P(title),
-                          dcc.Dropdown(id=id_name, clearable=clearable, options=options, value=value)],
+                          dcc.Dropdown(id=id_name, clearable=clearable, options=options,
+                                       value=value)],
                          className=css_class)
     return model_sel
 
@@ -126,7 +127,7 @@ def make_slider(title, id_name, min_value, max_value, step, css_class="plot_bar_
         range_lab.append(str(i))
     week_slider = html.Div([
         html.P(title),
-        dcc.Slider(min=min_value, max=max_value, step=1, marks=dict(zip(range_val, range_lab)), value=min_value,
-                   id=id_name, tooltip=tooltip)
+        dcc.Slider(min=min_value, max=max_value, step=1, marks=dict(zip(range_val, range_lab)),
+                   value=min_value, id=id_name, tooltip=tooltip)
     ], className=css_class)
     return week_slider
