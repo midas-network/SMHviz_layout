@@ -336,7 +336,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                           css_radio_disabled=css_radio_disabled,
                                           css_radio=css_radio)
     elif tab in ["state_deviation", "trend_map", "risk_map", "heatmap", "sample_peak",
-                 "model_disp"]:
+                 "model_disp", "model_disp_scen"]:
         scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario,
                                           div_type="radio", css_check=css_check,
                                           css_check_disabled=css_check_disabled,
@@ -357,7 +357,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution",
                "multipat_plot", "peak_size", "multipat_plot_comb", "multipat_plot_comb1",
                "scenario_disp", "spaghetti_disp", "model_disp", "scen_sample_comp",
-               "scen_sample_comp_disp"]:
+               "scen_sample_comp_disp", "model_disp_scen"]:
         location_sel = location_selection(list_location, css_drop=css_drop,
                                           css_drop_disabled=css_drop_disabled,
                                           css_p_disabled=css_p_disabled)
@@ -396,7 +396,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                       css_p_disabled=css_p_disabled,
                                       css_radio_disabled=css_radio_disabled, css_radio=css_radio)
     # UI
-    if tab in ["scenario", "model_specific", "scenario_disp", "model_disp"]:
+    if tab in ["scenario", "model_specific", "scenario_disp", "model_disp", "model_disp_scen"]:
         if (multi_ui is True) and (tab in ["scenario", "scenario_disp"]):
             ui_sel_list.append({"label": "Multi", "value": -1})
             ui_text = html.Span("'multi' displays 95%, 90%, 80%, and 50% uncertainty "
@@ -427,7 +427,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     # Race ethnicity
     if race_ethnicity is not None:
         if tab in ["scenario", "spaghetti", "scenario_disp", "spaghetti_disp",
-                   "scen_sample_comp_disp"]:
+                   "scen_sample_comp_disp", "model_disp_scen"]:
             race_ethnicity_sel = target_selection(race_ethnicity, "overall",
                                                   title="Race - Ethnicity:",
                                                   id_name="race_ethnicity-radio")

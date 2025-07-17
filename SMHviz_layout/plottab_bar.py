@@ -555,7 +555,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     # Prepare plot bar
     if plot_tab in ["scenario", "scenario_disp"]:
         plot_bar = [checkbox]
-    elif plot_tab in ["model_specific", "model_disp"]:
+    elif plot_tab in ["model_specific", "model_disp", "model_disp_scen"]:
         plot_bar = [radio_target, model_sel, checkbox]
     elif plot_tab in ["scen_sample_comp", "scen_sample_comp_disp"]:
         radio_type_target = make_radio_items(title="Type", id_name="comp-type-radio", value="abs",
