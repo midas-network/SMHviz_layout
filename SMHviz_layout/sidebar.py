@@ -336,7 +336,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                           css_radio_disabled=css_radio_disabled,
                                           css_radio=css_radio)
     elif tab in ["state_deviation", "trend_map", "risk_map", "heatmap", "sample_peak",
-                 "model_disp", "model_disp_scen"]:
+                 "model_disp"]:
         scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario,
                                           div_type="radio", css_check=css_check,
                                           css_check_disabled=css_check_disabled,
