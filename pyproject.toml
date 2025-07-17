@@ -1,6 +1,6 @@
 [project]
 name = "SMHviz_layout"
-version = "0.0.2"
+version = "0.0.2.9000"
 authors = [
   { name="Lucie Contamin", email="contamin@pitt.edu" },
 ]
