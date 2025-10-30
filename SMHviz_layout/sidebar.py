@@ -336,7 +336,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                           css_radio_disabled=css_radio_disabled,
                                           css_radio=css_radio)
     elif tab in ["state_deviation", "trend_map", "risk_map", "heatmap", "sample_peak",
-                 "model_disp"]:
+                 "model_disp", "so_boxplot"]:
         scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario,
                                           div_type="radio", css_check=css_check,
                                           css_check_disabled=css_check_disabled,
@@ -357,7 +357,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution",
                "multipat_plot", "peak_size", "multipat_plot_comb", "multipat_plot_comb1",
                "scenario_disp", "spaghetti_disp", "model_disp", "scen_sample_comp",
-               "scen_sample_comp_disp"]:
+               "scen_sample_comp_disp", "so_boxplot"]:
         location_sel = location_selection(list_location, css_drop=css_drop,
                                           css_drop_disabled=css_drop_disabled,
                                           css_p_disabled=css_p_disabled)
@@ -413,7 +413,7 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     # Age group
     if age_group is not None:
         if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "state_deviation",
-                   "trend_map", "risk_map", "model_distribution", "scen_sample_comp"]:
+                   "trend_map", "risk_map", "model_distribution", "scen_sample_comp", "so_boxplot"]:
             age_group_sel = target_selection(age_group, "0-130", title="Age Group:",
                                              id_name="age_group-radio")
         else:
