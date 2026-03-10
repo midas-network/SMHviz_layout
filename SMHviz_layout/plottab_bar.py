@@ -2,9 +2,11 @@ import re
 
 from SMHviz_layout.utils import *
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 
 
-def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble=True):
+def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble=True,
+                         scen_style="checkbox"):
     """Create a Div component with the notes associated with the multi-pathogen plot
 
     Make a html.Div() object containing the multi-pathogen plot associated notes, both pathogen
@@ -29,17 +31,24 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble
     if style is None:
         style = {"margin-left": "5%", "width": "95%"}
     if len(other_pathogen) > 1:
-        other_pathogen_name = ", ".join(other_pathogen)
+        if scen_style == "radio":
+            name_pathogen = ", ".join(other_pathogen)
+            other_pathogen_name = ", ".join(other_pathogen[1:])
+        elif scen_style == "checkbox":
+            other_pathogen_name = name_pathogen = ", ".join(other_pathogen)
+        else:
+            raise "Style not recognized"
     else:
-        other_pathogen_name = other_pathogen[0]
+        name_pathogen = other_pathogen_name = other_pathogen[0]
     if len(website) > 1:
         other_pathogen_website = list()
         for i in range(len(website)):
-            web = html.A(other_pathogen[i] + " Scenario Modeling Hub Website", target="blank",
-                         href=website[i])
-            if i < len(website) - 1:
-                web = html.Span([web, ", "])
-            other_pathogen_website.append(web)
+            if website[i] is not None:
+                web = html.A(other_pathogen[i] + " Scenario Modeling Hub Website", target="blank",
+                             href=website[i])
+                if i < len(website) - 1:
+                    web = html.Span([web, ", "])
+                other_pathogen_website.append(web)
     else:
         other_pathogen_website = html.A(other_pathogen[0] + " Scenario Modeling Hub Website",
                                         target="blank", href=website[0])
@@ -49,7 +58,7 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble
         ensemble = ""
     notes = html.Div([
         html.P(["These projections were produced by combining separate multi-model " + ensemble +
-                ''"projections of " + pathogen + ", " + other_pathogen_name +
+                ''"projections of " + name_pathogen +
                 ". We do not account for any interaction between these diseases, which could "
                 "include behavioral or immunological interactions that might modify the impacts of"
                 " one or more of these viruses. For more information on " + other_pathogen_name +
@@ -123,7 +132,8 @@ def multi_pathogen_bar(pathogen, other_pathogen, quant_opt=None, sel_quant=0.5, 
     return html.Div(plot_bar)
 
 
-def multi_pathogen_bar_comp(pathogen, other_pathogen, bar_style=None, note_style=None):
+def multi_pathogen_bar_comp(pathogen, other_pathogen, scen_style="checkbox",
+                            bar_style=None, note_style=None):
     """Create Combine Multi-pathogen specific top bar filter
 
     Create Combine Multi-pathogen specific top bar filter containing:
@@ -139,6 +149,8 @@ def multi_pathogen_bar_comp(pathogen, other_pathogen, bar_style=None, note_style
       default), `name` (name of the pathogen), `round_int` (integer representing the specific
       round of the associated pathogen), `website` (associated website)
     :type other_pathogen: list | None
+    :parameter scen_style: Style of the plot bar: "checkbox" or "radio"
+    :style scen_style: str
     :parameter bar_style: Style associated with the checkbox,
         if `None`: {'width': '100%', 'display': 'flex'}
     :type bar_style: dict | str
@@ -158,19 +170,29 @@ def multi_pathogen_bar_comp(pathogen, other_pathogen, bar_style=None, note_style
         for i in range(len(patho_information["scenario"]["name"])):
             patho_scen_dict.append({"label": patho_information["scenario"]["name"][i],
                                     "value": patho_information["scenario"]["id"][i]})
-        bar = make_checkbox(patho_information["name"] + " Round " +
-                            str(patho_information["round_int"]) + " Scenario Selection" + ':',
-                            "other-scenario_" + patho_information["name"].lower(),
-                            options=patho_scen_dict, value=patho_information["default_sel"],
-                            style={"display": "inline-block", "margin-left": "5%",
-                                   "width": str(width) + "%"},
-                            check_style={"display": "inline-grid"})
+        if scen_style == "checkbox":
+            bar = make_checkbox(patho_information["name"] + " Round " +
+                                str(patho_information["round_int"]) + " Scenario Selection" + ':',
+                                "other-scenario_" + patho_information["name"].lower(),
+                                options=patho_scen_dict, value=patho_information["default_sel"],
+                                style={"display": "inline-block", "margin-left": "5%",
+                                       "width": str(width) + "%"},
+                                check_style={"display": "inline-grid"})
+        elif scen_style == "radio":
+            bar = make_radio_items(patho_information["name"] + " Round " +
+                                   str(patho_information["round_int"]) + " Selection" + ':',
+                                   "other-scenario_" + patho_information["name"].lower(),
+                                   options=patho_scen_dict, value=patho_information["default_sel"],
+                                   style={"display": "grid", "margin-left": "5%",
+                                          "width": str(width) + "%"})
+        else:
+            raise "Plot Bar Style not recognized, only 'checkbox' or 'radio' accepted"
         list_bar.append(bar)
         list_patho_name.append(patho_information["name"])
         list_website.append(patho_information["website"])
     bar = html.Div(list_bar, style=bar_style)
     plot_bar = [bar, multi_pathogen_notes(pathogen, list_patho_name, list_website,
-                                          style=note_style, ensemble=False)]
+                                          style=note_style, ensemble=False, scen_style=scen_style)]
     return html.Div(plot_bar)
 
 
@@ -417,9 +439,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
                   sc_sidebar_option, pathogen, scen_choice, other_pathogen, plot_tab,
                   quant_opt=None, sel_quant=0.5, method_list=None, tf_options=None, traj_min=10,
                   traj_max=100, traj_step=10, check_med=True, style_checkbox=None,
-                  css_sel="plot_bar_sel", inline_radio=True, clearable=False, tooltip=None,
-                  radio_comp_style=None, multi_note_style=None, multi_bar_style=None,
-                  css_multi_radio="multi_bar_radio", traj_slider_style=None,
+                  scen_multicomp_style="checkbox", css_sel="plot_bar_sel", inline_radio=True,
+                  clearable=False, tooltip=None, radio_comp_style=None, multi_note_style=None,
+                  multi_bar_style=None, css_multi_radio="multi_bar_radio", traj_slider_style=None,
                   css_h_radio="radio_heatmap", css_h_drop="dropdown_heatmap",
                   css_bar_plot="plot_bar", heatmap_style=None, traj_by_model=False,
                   mod_drop_id="model_dropdown", tooltipclass=None):
@@ -484,6 +506,9 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
     :parameter style_checkbox: Style associated with the checkbox,
         if `None`: {"display": "inline-block", "margin-left": "5%", "width": "25%"}
     :type style_checkbox: dict | str
+    :parameter scen_multicomp_style: Style of the plot bar scenario selection for multi-pathogen
+        combined plot: "checkbox" or "radio"
+    :type scen_multicomp_style: str
     :parameter css_sel: string, name of the associated CSS element, see documentation
     :type css_sel: str
     :parameter inline_radio: Boolean to indicate if the RadioItems should be inline or not
@@ -581,6 +606,7 @@ def make_plot_bar(val_default, max_horizon, hide_ens, sc_panel_name, sc_multi_pa
                                       css_multi_radio=css_multi_radio)
     elif plot_tab in ["multipat_plot_comb", "multipat_plot_comb1"]:
         plot_bar = multi_pathogen_bar_comp(pathogen, other_pathogen,
+                                           scen_style=scen_multicomp_style,
                                            bar_style=multi_bar_style, note_style=multi_note_style)
     elif plot_tab in ["spaghetti", "spaghetti_disp"]:
         traj_model_id = "t_model_check"

@@ -41,7 +41,8 @@ def make_checkbox(title, id_name, options, hide=False, style=None, value=None, c
     return checkbox
 
 
-def make_radio_items(title, id_name, options, value, css_class="plot_bar_sel", inline=True):
+def make_radio_items(title, id_name, options, value, css_class="plot_bar_sel", inline=True,
+                     style=None):
     """Create a Div component with a RadioItems
 
     Make a Div component with a RadioItems and a title. For more information, please consult
@@ -64,7 +65,7 @@ def make_radio_items(title, id_name, options, value, css_class="plot_bar_sel", i
     radio_item = html.Div([
         html.P(title),
         dcc.RadioItems(inline=inline, id=id_name, options=options, value=value)
-    ], className=css_class)
+    ], className=css_class, style=style)
     return radio_item
 
 
