@@ -26,6 +26,9 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble
     :parameter ensemble: Boolean to append the noted to say; "combining multi-model ensemble
       projections" (with or without the work "ensemble")
     :type ensemble: bool
+    :parameter scen_style: Style of the plot bar: "checkbox" or "radio". If 'radio' selected, the
+    first element of `other_pathogen` will be ignored
+    :style scen_style: str
     :return: a html.Div() component containing the multi-pathogen plot associated notes
     """
     if style is None:
@@ -35,7 +38,8 @@ def multi_pathogen_notes(pathogen, other_pathogen, website, style=None, ensemble
             name_pathogen = ", ".join(other_pathogen)
             other_pathogen_name = ", ".join(other_pathogen[1:])
         elif scen_style == "checkbox":
-            other_pathogen_name = name_pathogen = ", ".join(other_pathogen)
+            other_pathogen_name = ", ".join(other_pathogen)
+            name_pathogen = pathogen + ", " + other_pathogen_name
         else:
             raise "Style not recognized"
     else:
@@ -144,10 +148,11 @@ def multi_pathogen_bar_comp(pathogen, other_pathogen, scen_style="checkbox",
     :parameter pathogen: Name of the principal pathogen
     :type pathogen: str
     :parameter other_pathogen: List of dictionaries containing the information for the other
-      pathogens for the multi-pathogen plots. The dictionary should contain the keys: `scenario`
-      (dictionary with `id` and `name` keys), `default_sel`(id(s) of the scenario selected by
-      default), `name` (name of the pathogen), `round_int` (integer representing the specific
-      round of the associated pathogen), `website` (associated website)
+      pathogens or all pathogens (if scen_style = "radio") for the multi-pathogen plots.
+      The dictionary should contain the keys: `scenario` (dictionary with `id` and `name` keys),
+      `default_sel`(id(s) of the scenario selected by default), `name` (name of the pathogen),
+      `round_int` (integer representing the specific round of the associated pathogen), `website`
+      (associated website)
     :type other_pathogen: list | None
     :parameter scen_style: Style of the plot bar: "checkbox" or "radio"
     :style scen_style: str
