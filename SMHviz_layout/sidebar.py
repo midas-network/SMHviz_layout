@@ -240,10 +240,10 @@ def ui_selection(options, value, disabled=False, add_description=None,
 def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict, target_dict,
                  def_target, age_group=None, race_ethnicity=None, ui_sel_list=None, ui_val=95,
                  unselect_scenario=None, cumulative=True, multi_ui=True, round_name=None,
-                 css_left_col="column left", css_check="checklist", css_radio="radioItems",
-                 css_p_disabled="p disabled", css_check_disabled="checklist disabled",
-                 css_radio_disabled="radioItems disabled", css_drop="dropdown",
-                 css_drop_disabled="dropdown disabled"):
+                 scen_comp_style="checkbox", css_left_col="column left", css_check="checklist",
+                 css_radio="radioItems", css_p_disabled="p disabled",
+                 css_check_disabled="checklist disabled", css_radio_disabled="radioItems disabled",
+                 css_drop="dropdown", css_drop_disabled="dropdown disabled"):
     """Create the sidebar on the SMH visualization websites
 
     The sidebar is depending on the round and on the plot tab selected.
@@ -293,6 +293,9 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     :type multi_ui: bool
     :parameter round_name: Name of the round to display, if None "Round <Number>"
     :type round_name: str
+    :parameter scen_comp_style: Style of the plot bar scenario selection for multi-pathogen
+        combined plot: "checkbox" or "radio"
+    :type scen_comp_style: str
     :parameter css_left_col: string, name of the associated CSS element, see documentation
     :type css_left_col: str
     :parameter css_check: string, name of the associated CSS element, see documentation
@@ -326,9 +329,12 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
         scen_check.append(i + " (" + scen_info[i] + ")")
     scen_check = dict(zip(scen_info.keys(), scen_check))
     invert_scen = {v: k for k, v in scenario_dict.items()}
-    if tab in ["scenario", "model_distribution", "spaghetti", "multipat_plot", "proj_peaks",
-               "peak_time_model", "peak_size", "multipat_plot_comb", "multipat_plot_comb1",
-               "scenario_disp", "spaghetti_disp"]:
+    scenario_tab_check = ["scenario", "model_distribution", "spaghetti", "multipat_plot",
+                          "proj_peaks",  "peak_time_model", "peak_size", "multipat_plot_comb1",
+                          "scenario_disp", "spaghetti_disp"]
+    if scen_comp_style == "checkbox":
+        scenario_tab_check = scenario_tab_check + ["multipat_plot_comb"]
+    if tab in scenario_tab_check:
         scenario_sel = scenario_selection(scen_check, invert_scen, unselect_scenario,
                                           div_type="checklist", css_check=css_check,
                                           css_check_disabled=css_check_disabled,
