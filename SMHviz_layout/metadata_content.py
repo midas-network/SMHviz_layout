@@ -29,7 +29,7 @@ def make_dt_metadata(metadata_file):
 
 
 def make_abstract_tab(round_number, path="./visualization/data-visualization/model_abstracts/",
-                      id_append="", pattern="\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md"):
+                      id_append="", pattern=r"\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md", append=True):
     """Create the abstract page
 
     Create the SMH round specific layout page for the abstract, with a dropdown containing the name
@@ -42,11 +42,16 @@ def make_abstract_tab(round_number, path="./visualization/data-visualization/mod
     :parameter id_append: Character to append to the objects IDs.
     :type id_append: str
     :parameter pattern: pattern to extract team-model name from the file, by default
-        `"\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md"`
+        `r"\d{4}-\d{2}-\d{2}-|-(A|a)bstract.md"`
     :type pattern: str
+    :parameter append: add `f"round{round_number}"` to the path if True
+    :type append: Boolean 
     :return: Div component associated with the round, tab selected and associated abstract
     """
-    file_list = os.listdir(path + "round" + str(round_number))
+    if append:
+        file_list = os.listdir(path + "round" + str(round_number))
+    else:
+        file_list = os.listdir(path)
     checkbox_list = list()
     for i in file_list:
         checkbox_entry = re.sub(pattern, "", i)
@@ -64,7 +69,8 @@ def make_abstract_tab(round_number, path="./visualization/data-visualization/mod
 
 def render_abstract(round_number, round_date, team_model_name,
                     path="./visualization/data-visualization/model_abstracts/",
-                    file_append=["-abstract", "-Abstract"], file_extension=".md"):
+                    file_append=["-abstract", "-Abstract"], file_extension=".md",
+                    append=True):
     """Create the abstract content
 
     Return the content of a specific abstract.
@@ -91,15 +97,19 @@ def render_abstract(round_number, round_date, team_model_name,
     :type file_append: list | None
     :parameter file_extension: Character string, extension of the file, ".md" by default
     :type file_extension: str
+    :parameter append: add `f"round{round_number}"` to the path if True
+    :type append: Boolean
     :return: Div component associated with a specific abstract
     """
+    if append:
+        dir_path = path + "round" + str(round_number)
+    else:
+        dir_path = path
     if file_append is None:
-        filename = (path + "round" + str(round_number) + "/" + round_date + "-" + team_model_name +
-                    file_extension)
+        filename = dir_path + "/" + round_date + "-" + team_model_name + file_extension
     else:
         for i in file_append:
-            filename = (path + "round" + str(round_number) + "/" + round_date + "-" +
-                        team_model_name + i + file_extension)
+            filename = dir_path + "/" + round_date + "-" + team_model_name + i + file_extension
             if os.path.isfile(filename):
                 break
     with open(filename, "r") as f:
