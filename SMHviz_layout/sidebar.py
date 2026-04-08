@@ -237,7 +237,7 @@ def ui_selection(options, value, disabled=False, add_description=None,
     return ui_sel
 
 
-def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict, target_dict,
+def make_sidebar(round_number, tab, scenario_file, location_name, scenario_dict, target_dict,
                  def_target, age_group=None, race_ethnicity=None, ui_sel_list=None, ui_val=95,
                  unselect_scenario=None, cumulative=True, multi_ui=True, round_name=None,
                  scen_comp_style="checkbox", css_left_col="column left", css_check="checklist",
@@ -260,8 +260,8 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
     :type tab: str
     :parameter scenario_file: Path to CSV file containing scenario information per round
     :type scenario_file: str
-    :parameter location_info: table containing location information in the SMH standard
-    :type location_info: DataFrame
+    :parameter location_name: list of location name in the SMH standard (use for dropdown)
+    :type location_name: list
     :parameter scenario_dict: A dictionary with scenario id (value) and associated number (key)
     :type scenario_dict: dict
     :parameter target_dict: A dictionary with target name (as in submission file) as keys and
@@ -357,18 +357,17 @@ def make_sidebar(round_number, tab, scenario_file, location_info, scenario_dict,
                                           css_radio_disabled=css_radio_disabled,
                                           css_radio=css_radio)
     # Location
-    list_location = list(location_info["location_name"])
-    if 'U.S. Minor Outlying Islands' in list_location:
-        list_location.remove('U.S. Minor Outlying Islands')
+    if 'U.S. Minor Outlying Islands' in location_name:
+        location_name.remove('U.S. Minor Outlying Islands')
     if tab in ["scenario", "spaghetti", "model_specific", "scen_comparison", "model_distribution",
                "multipat_plot", "peak_size", "multipat_plot_comb", "multipat_plot_comb1",
                "scenario_disp", "spaghetti_disp", "model_disp", "scen_sample_comp",
                "scen_sample_comp_disp", "so_boxplot", "model_disp_scen"]:
-        location_sel = location_selection(list_location, css_drop=css_drop,
+        location_sel = location_selection(location_name, css_drop=css_drop,
                                           css_drop_disabled=css_drop_disabled,
                                           css_p_disabled=css_p_disabled)
     else:
-        location_sel = location_selection(list_location, disabled=True, css_drop=css_drop,
+        location_sel = location_selection(location_name, disabled=True, css_drop=css_drop,
                                           css_drop_disabled=css_drop_disabled,
                                           css_p_disabled=css_p_disabled)
     # Target
