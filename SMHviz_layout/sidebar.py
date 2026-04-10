@@ -284,7 +284,7 @@ def make_sidebar(round_number, tab, scenario_file, location_name, scenario_dict,
     :parameter ui_val: Value indicating default uncertainty interval selection (default: 95).
     :type ui_val: int
     :parameter unselect_scenario: A list of scenario id to uncheck by default. If None, all selected
-    :type unselect_scenario: list
+    :type unselect_scenario: list | None
     :parameter cumulative: [For risk map only] Boolean, to use cumulative (True) or incident
         target(s) (False)
     :type cumulative: bool
