@@ -25,12 +25,12 @@ def make_tab_plots(sel_plot, tab_name_dict, show=None, plot_sel=None, tab_id_nam
 
 
     :parameter sel_plot: List of internal id tab names of each plot to include in the tabs
-    :type sel_plot: list
+    :type sel_plot: list | None
     :parameter tab_name_dict: A dictionary with internal id tab names as keys and list of full tab
         name as value
     :type tab_name_dict: dict
     :parameter show: A character string to replace all the tabs is `sel_plot` is set to None
-    :type show: str
+    :type show: str | None
     :parameter plot_sel: A character string corresponding of the internal id tab name of the plot
         to select by default, first on the `sel_plot` list, if parameter set to `None`
     :type plot_sel: str
